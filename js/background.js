@@ -25,6 +25,8 @@ let state = {
   // Penunjuk eksekusi berjalan
   currentLoopIndex: 0, // Indeks baris CSV / putaran aktif (0-based)
   currentActionIndex: 0, // Indeks aksi aktif (0-based)
+  focusActionIndex: null,
+  focusActionNonce: 0,
   activeTabId: null,
   lastErrorContext: null,
   
@@ -271,16 +273,20 @@ function stopRecording(callback) {
 }
 
 function recordAction(action) {
+  let insertedIndex = state.scenario.length;
   if (state.recordInsertIndex !== null && state.recordInsertIndex >= 0) {
     // Sisipkan pada posisi tertentu (saat rekam dari posisi insert line)
     const insertAt = Math.min(state.recordInsertIndex, state.scenario.length);
     state.scenario.splice(insertAt, 0, action);
     state.recordInsertIndex = insertAt + 1; // Geser posisi insert untuk aksi berikutnya
+    insertedIndex = insertAt;
     addLog(`Aksi disisipkan di posisi ${insertAt + 1}: ${action.type.toUpperCase()} pada ${action.selector}`, 'info');
   } else {
     state.scenario.push(action);
+    insertedIndex = state.scenario.length - 1;
     addLog(`Aksi terekam: ${action.type.toUpperCase()} pada ${action.selector}`, 'info');
   }
+  setFocusAction(insertedIndex);
   broadcastState();
 }
 
@@ -362,6 +368,7 @@ function moveAction(fromIndex, toIndex) {
 function insertAction(index, action) {
   const insertAt = Math.min(index, state.scenario.length);
   state.scenario.splice(insertAt, 0, action);
+  setFocusAction(insertAt);
   addLog(`Aksi ${action.type.toUpperCase()} disisipkan di posisi ${insertAt + 1}.`, 'info');
   broadcastState();
 }
@@ -375,7 +382,6 @@ function startRecordingAtIndex(index, callback) {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     if (tabs[0]) {
       state.activeTabId = tabs[0].id;
-      recordInitialPageContext(tabs[0]);
       addLog(`Perekaman dimulai dari posisi ${index + 1}...`, 'warning');
       broadcastState();
       chrome.tabs.sendMessage(tabs[0].id, { type: 'ACTIVATE_RECORDER' }, (res) => {
@@ -412,9 +418,17 @@ function recordInitialPageContext(tab) {
     const insertAt = Math.min(state.recordInsertIndex, state.scenario.length);
     state.scenario.splice(insertAt, 0, action);
     state.recordInsertIndex = insertAt + 1;
+    setFocusAction(insertAt);
   } else {
     state.scenario.push(action);
+    setFocusAction(state.scenario.length - 1);
   }
+}
+
+function setFocusAction(index) {
+  state.focusActionIndex = index;
+  state.currentActionIndex = index;
+  state.focusActionNonce = (state.focusActionNonce || 0) + 1;
 }
 
 function injectContentScriptAndActivate(tabId) {
@@ -696,6 +710,7 @@ async function runAutomationLoop() {
       addLog(`[Langkah ${actionIdx + 1}] Memulai aksi: ${step.type.toUpperCase()}`, 'info');
       
       let success = false;
+      let transientRetries = 0;
       while (!success && state.status === 'playing') {
         try {
           let tabId = await getOrCreateActiveTabId();
@@ -705,6 +720,16 @@ async function runAutomationLoop() {
           if (result.status === 'success') {
             success = true;
             addLog(`[Langkah ${actionIdx + 1}] Sukses.`, 'success');
+          } else if (result.silentRetry) {
+            transientRetries++;
+            if (transientRetries > 5) {
+              state.status = 'idle';
+              addLog(`[Langkah ${actionIdx + 1}] Dihentikan: ${result.message}`, 'error');
+              broadcastState();
+              return;
+            }
+            addLog(`[Langkah ${actionIdx + 1}] Tab belum siap, mencoba ulang (${transientRetries}/5)...`, 'warning');
+            await new Promise(resolve => setTimeout(resolve, 900));
           } else {
             addLog(`[Langkah ${actionIdx + 1}] Gagal: ${result.message}`, 'error');
             
@@ -766,8 +791,8 @@ async function executeStepWithActiveTab(tabId, step, csvRowData, actionIdx) {
     let newTabId = await findOrCreateTab(targetUrl);
     state.activeTabId = newTabId;
     broadcastState();
-    // Tunggu tab siap
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await waitForTabComplete(newTabId);
+    await ensureContentScriptReady(newTabId);
     return { status: 'success' };
   }
 
@@ -790,6 +815,8 @@ async function executeStepWithActiveTab(tabId, step, csvRowData, actionIdx) {
     let newTabId = await findOrCreateTab(targetUrl);
     state.activeTabId = newTabId;
     broadcastState();
+    await waitForTabComplete(newTabId);
+    await ensureContentScriptReady(newTabId);
     return { status: 'success' };
   }
   
@@ -867,13 +894,51 @@ async function ensureTabForStep(tabId, step, actionIdx, options = {}) {
 }
 
 function sendStepToTab(tabId, step, executionValue) {
-  return new Promise((resolve) => {
-    chrome.tabs.sendMessage(tabId, { type: 'EXECUTE_STEP', step: step, value: executionValue }, (res) => {
+  return new Promise(async (resolve) => {
+    await ensureContentScriptReady(tabId);
+    chrome.tabs.sendMessage(tabId, { type: 'EXECUTE_STEP', step: step, value: executionValue }, async (res) => {
       if (chrome.runtime.lastError) {
-        resolve({ status: 'error', message: 'Koneksi dengan tab terputus. Silakan muat ulang halaman.' });
+        await ensureContentScriptReady(tabId);
+        chrome.tabs.sendMessage(tabId, { type: 'EXECUTE_STEP', step: step, value: executionValue }, (retryRes) => {
+          if (chrome.runtime.lastError) {
+            resolve({
+              status: 'error',
+              silentRetry: true,
+              message: 'Koneksi tab belum siap setelah berpindah halaman/tab.'
+            });
+          } else {
+            resolve(retryRes);
+          }
+        });
       } else {
         resolve(res);
       }
+    });
+  });
+}
+
+async function ensureContentScriptReady(tabId, forceInject = false) {
+  if (!tabId) return false;
+  if (!forceInject) {
+    const pingOk = await new Promise((resolve) => {
+      chrome.tabs.sendMessage(tabId, { type: 'PING_CONTENT' }, (res) => {
+        resolve(!chrome.runtime.lastError && res && res.status === 'ready');
+      });
+    });
+    if (pingOk) return true;
+  }
+
+  if (!chrome.scripting) return false;
+  return new Promise((resolve) => {
+    chrome.scripting.executeScript({ target: { tabId }, files: ['js/content.js'] }, () => {
+      if (chrome.runtime.lastError) {
+        console.warn('Gagal memastikan content script siap:', chrome.runtime.lastError.message);
+        resolve(false);
+        return;
+      }
+      chrome.tabs.sendMessage(tabId, { type: 'PING_CONTENT' }, (res) => {
+        resolve(!chrome.runtime.lastError && res && res.status === 'ready');
+      });
     });
   });
 }

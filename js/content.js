@@ -127,6 +127,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     case 'STATE_CHANGED':
       isRecordingActive = (message.state.status === 'recording');
       break;
+
+    case 'PING_CONTENT':
+      sendResponse({ status: 'ready' });
+      break;
       
     case 'EXECUTE_STEP':
       executeStep(message.step, message.value)

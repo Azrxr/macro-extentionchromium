@@ -81,6 +81,7 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
 }
 
 .logo-icon {
@@ -114,6 +115,23 @@ body {
   background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: 0.5px;
+}
+
+.brand-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  line-height: 1.1;
+}
+
+.brand-copy p {
+  margin-top: 2px;
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  white-space: nowrap;
 }
 
 /* Status Pill */
@@ -568,15 +586,17 @@ select.toolbar-action-select {
   font-weight: 600;
 }
 
-/* Scrollable list - fits ~7 steps then scrolls */
+/* Scrollable list - fits ~5 steps then scrolls */
 .steps-list-container {
-  max-height: 380px;
+  max-height: 300px;
   min-height: 60px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 0;
-  padding-right: 2px;
+  padding-right: 4px;
+  overscroll-behavior: contain;
+  align-items: stretch;
 }
 
 /* Empty State */
@@ -591,6 +611,7 @@ select.toolbar-action-select {
   border: 1px dashed var(--border-glass);
   border-radius: 12px;
   color: var(--text-muted);
+  flex-shrink: 0;
 }
 
 .empty-icon {
@@ -612,6 +633,8 @@ select.toolbar-action-select {
   transition: all var(--transition-speed);
   position: relative;
   overflow: hidden;
+  flex: 0 0 auto;
+  min-height: 46px;
 }
 
 .step-item:hover {
@@ -820,6 +843,7 @@ select.toolbar-action-select {
 /* ====== INSERT LINE between steps ====== */
 .step-insert-line {
   height: 14px;
+  min-height: 14px;
   margin: 0 12px;
   background: transparent;
   border-radius: 2px;
@@ -829,6 +853,7 @@ select.toolbar-action-select {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex: 0 0 14px;
 }
 
 .step-insert-line::before {
@@ -878,6 +903,7 @@ select.toolbar-action-select {
   gap: 6px;
   padding: 8px 10px;
   background: rgba(157, 78, 221, 0.08);
+  flex: 0 0 auto;
   border: 1px solid rgba(157, 78, 221, 0.2);
   border-radius: 8px;
   margin: 4px 0;
@@ -1002,6 +1028,12 @@ select.toolbar-action-select {
   border-color: var(--color-danger);
   background: rgba(239, 68, 68, 0.08);
   transition: all 0.15s;
+}
+
+.step-item.focus-flash {
+  border-color: var(--color-cyan);
+  background: rgba(0, 245, 212, 0.08);
+  box-shadow: 0 0 14px rgba(0, 245, 212, 0.16);
 }
 
 .step-param-input {

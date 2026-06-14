@@ -178,6 +178,8 @@ document.addEventListener('DOMContentLoaded', () => {
       staticLoopCount: 1,
       currentLoopIndex: 0,
       currentActionIndex: 0,
+      focusActionIndex: null,
+      focusActionNonce: 0,
       isFloatingOpen: false,
       logs: []
     };
@@ -252,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 4. Render Scenario Steps
-    renderStepsList(state.scenario || [], state.csvData, state.status, state.currentActionIndex);
+    renderStepsList(state.scenario || [], state.csvData, state.status, state.currentActionIndex, state.focusActionIndex, state.focusActionNonce);
     
     // 5. Render Active CSV Info
     if (state.csvData && selectedCsvCard) {
@@ -468,17 +470,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Render list of Scenario Actions Steps
-  function renderStepsList(scenario, csvData, status, activeIndex) {
+  let lastFocusedActionNonce = null;
+  let lastPlaybackFocusKey = '';
+
+  function renderStepsList(scenario, csvData, status, activeIndex, focusActionIndex, focusActionNonce) {
     if (stepsCountBadge) stepsCountBadge.textContent = `${scenario.length} Langkah`;
     if (!stepsListContainer) return;
-  
-    // Dynamic card height: ~54px per step, max 7 visible
-    const stepsCard = document.querySelector('.steps-card');
-    if (stepsCard) {
-      const maxVisible = Math.min(scenario.length, 7);
-      const maxH = scenario.length === 0 ? 120 : Math.max(80, maxVisible * 54 + 50);
-      stepsListContainer.style.maxHeight = maxH + 'px';
-    }
   
     if (scenario.length === 0) {
       stepsListContainer.innerHTML = `
@@ -494,6 +491,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
     stepsListContainer.innerHTML = '';
     let activeStepEl = null;
+    let focusStepEl = null;
   
     scenario.forEach((step, idx) => {
       if (!step) return;
@@ -511,6 +509,8 @@ document.addEventListener('DOMContentLoaded', () => {
       // -- Step item (row layout: content-area + reorder-section) --
       const stepItem = document.createElement('div');
       stepItem.className = `step-item ${isCurrentExecuting ? 'active' : ''}`;
+      stepItem.dataset.actionIndex = idx;
+      if (focusActionIndex === idx) focusStepEl = stepItem;
       if (isCurrentExecuting) activeStepEl = stepItem;
   
       // Content area (left side)
@@ -755,12 +755,36 @@ document.addEventListener('DOMContentLoaded', () => {
     insertLineEnd.addEventListener('click', () => toggleInsertToolbar(insertLineEnd, scenario.length));
     stepsListContainer.appendChild(insertLineEnd);
   
-    // Auto-scroll to active step during playback
+    // Auto-scroll to active step during playback, or to newly inserted/recorded step.
     if (activeStepEl && (status === 'playing' || status === 'paused')) {
+      const focusKey = `${status}:${activeIndex}:${scenario.length}`;
+      if (lastPlaybackFocusKey === focusKey) return;
+      lastPlaybackFocusKey = focusKey;
       setTimeout(() => {
-        activeStepEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        scrollStepIntoListView(activeStepEl);
+      }, 100);
+    } else if (focusStepEl && focusActionNonce !== null && focusActionNonce !== undefined && focusActionNonce !== lastFocusedActionNonce) {
+      lastFocusedActionNonce = focusActionNonce;
+      setTimeout(() => {
+        scrollStepIntoListView(focusStepEl);
+        focusStepEl.classList.add('focus-flash');
+        setTimeout(() => focusStepEl.classList.remove('focus-flash'), 900);
       }, 100);
     }
+  }
+
+  function scrollStepIntoListView(stepEl) {
+    if (!stepsListContainer || !stepEl) return;
+    const containerRect = stepsListContainer.getBoundingClientRect();
+    const itemRect = stepEl.getBoundingClientRect();
+    const currentTop = stepsListContainer.scrollTop;
+    const itemTop = itemRect.top - containerRect.top + currentTop;
+    const centeredTop = itemTop - (stepsListContainer.clientHeight / 2) + (stepEl.offsetHeight / 2);
+    const maxTop = Math.max(0, stepsListContainer.scrollHeight - stepsListContainer.clientHeight);
+    stepsListContainer.scrollTo({
+      top: Math.max(0, Math.min(centeredTop, maxTop)),
+      behavior: 'smooth'
+    });
   }
   
   // Insert toolbar toggle helper - 2 row layout
