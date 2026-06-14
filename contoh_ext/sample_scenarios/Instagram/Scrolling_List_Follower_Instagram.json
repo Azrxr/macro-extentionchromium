@@ -1,0 +1,26 @@
+{
+  "name": "Scrolling List Follower Instagram",
+  "steps": [
+    {
+      "action": "loop_start",
+      "param": 100,
+      "extra": ""
+    },
+    {
+      "action": "scroll",
+      "param": "div[role=\"dialog\"] .x6nl9eh|down|100",
+      "extra": ""
+    },
+    {
+      "action": "waitForPageLoad",
+      "param": "",
+      "extra": ""
+    },
+    {
+      "action": "loop_end",
+      "param": "",
+      "extra": ""
+    }
+  ],
+  "dataset": ""
+}

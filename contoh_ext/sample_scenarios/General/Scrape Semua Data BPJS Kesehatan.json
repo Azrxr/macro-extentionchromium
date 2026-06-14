@@ -1,0 +1,61 @@
+{
+  "name": "Scrape BPJS (Correct Pagination)",
+  "steps": [
+    {
+      "action": "navigate",
+      "param": "https://faskes.bpjs-kesehatan.go.id/aplicares/#/app/pnama/byname",
+      "extra": ""
+    },
+    {
+      "action": "waitForPageLoad",
+      "param": "",
+      "extra": ""
+    },
+    {
+      "action": "delay",
+      "param": 3000,
+      "extra": ""
+    },
+    {
+      "action": "collectData",
+      "param": "table.table-striped tbody tr || No:td:nth-child(1)|text, Nama:td:nth-child(2)|text, Telepon:td:nth-child(3)|text, Alamat:td:nth-child(4)|text",
+      "extra": ""
+    },
+    {
+      "action": "loop_start",
+      "param": 46,
+      "extra": ""
+    },
+    {
+      "action": "click",
+      "param": "a[ng-click*='selectPage(currentPage+1)']",
+      "extra": ""
+    },
+    {
+      "action": "waitForNetworkIdle",
+      "param": "5000",
+      "extra": ""
+    },
+    {
+      "action": "waitForElement",
+      "param": "table.table-striped tbody tr",
+      "extra": ""
+    },
+    {
+      "action": "delay",
+      "param": 500,
+      "extra": ""
+    },
+    {
+      "action": "collectData",
+      "param": "table.table-striped tbody tr || No:td:nth-child(1)|text, Nama:td:nth-child(2)|text, Telepon:td:nth-child(3)|text, Alamat:td:nth-child(4)|text",
+      "extra": ""
+    },
+    {
+      "action": "loop_end",
+      "param": "",
+      "extra": ""
+    }
+  ],
+  "dataset": ""
+}

@@ -1,0 +1,51 @@
+{
+  "name": "Geser Pagination Tabel",
+  "steps": [
+    {
+      "action": "navigate",
+      "param": "https://datatables.net/examples/api/form.html",
+      "extra": ""
+    },
+    {
+      "action": "waitForElement",
+      "param": "button[data-dt-idx=\"0\"]",
+      "extra": ""
+    },
+    {
+      "action": "scroll",
+      "param": "button[data-dt-idx=\"0\"] | intoView",
+      "extra": ""
+    },
+    {
+      "action": "loop_start",
+      "param": 6,
+      "extra": ""
+    },
+    {
+      "action": "show_alert",
+      "param": "Pagination Index ke {{loopIndex0}}",
+      "extra": "success|2500|center"
+    },
+    {
+      "action": "click",
+      "param": "button[data-dt-idx=\"{{loopIndex0}}\"]",
+      "extra": ""
+    },
+    {
+      "action": "delay",
+      "param": 500,
+      "extra": ""
+    },
+    {
+      "action": "loop_end",
+      "param": "",
+      "extra": ""
+    },
+    {
+      "action": "show_fullscreen_overlay",
+      "param": "Ganti pagination tabel selesai!",
+      "extra": "success|2500"
+    }
+  ],
+  "dataset": ""
+}

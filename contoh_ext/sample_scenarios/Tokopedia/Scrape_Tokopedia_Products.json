@@ -1,0 +1,31 @@
+{
+  "name": "Scrape Tokopedia Products",
+  "steps": [
+    {
+      "action": "loop_start",
+      "param": 5,
+      "extra": ""
+    },
+    {
+      "action": "scroll",
+      "param": "window.innerHeight",
+      "extra": ""
+    },
+    {
+      "action": "delay",
+      "param": 1500,
+      "extra": ""
+    },
+    {
+      "action": "loop_end",
+      "param": "",
+      "extra": ""
+    },
+    {
+      "action": "collectData",
+      "param": "div.css-jza1fo || Nama Produk:div[class*=\"SzILjt4fxHUFNVT48ZPhHA==\"] span|text, Harga:div[class*=\"urMOIDHH7I0Iy1Dv2oFaNw==\"]|text, Terjual:span[class*=\"u6SfjDD2WiBlNW7zHmzRhQ==\"]|text",
+      "extra": ""
+    }
+  ],
+  "dataset": ""
+}

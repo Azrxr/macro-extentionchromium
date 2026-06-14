@@ -1,0 +1,13 @@
+{
+  "name": "Simpan dengan Keypress Enter",
+  "steps": [
+    { "action": "navigate", "param": "https://didenkuswendi.github.io/ghosthands-index/form.html", "extra": "" },
+    { "action": "type", "param": "#nama", "extra": "Andi Wijaya" },
+    { "action": "type", "param": "#email", "extra": "andi@mail.com" },
+    { "action": "type", "param": "#usia", "extra": "32" },
+    { "action": "keypress", "param": "ENTER", "extra": "#usia" },
+    { "action": "delay", "param": 1000, "extra": "" },
+    { "action": "show_alert", "param": "Cek apakah data tersimpan!", "extra": "success|3000|center" }
+  ],
+  "dataset": ""
+}

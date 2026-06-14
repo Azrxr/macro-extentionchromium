@@ -1,0 +1,12 @@
+schema_version: 1
+module_path: magerin
+title: Browser Automation & RPA Engine
+scope:
+    - js/
+    - manifest.json
+    - sidepanel.html
+    - sidepanel.css
+source_files: []
+depends_on: []
+related_to:
+    - path: contoh_ext

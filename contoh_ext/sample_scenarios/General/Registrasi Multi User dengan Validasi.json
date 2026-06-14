@@ -1,0 +1,27 @@
+{
+  "name": "Registrasi Multi User dengan Validasi",
+  "steps": [
+    { "action": "navigate", "param": "https://example.com/register", "extra": "" },
+    { "action": "waitForPageLoad", "param": "", "extra": "" },
+    { "action": "loop_start", "param": "auto", "extra": "" },
+    { "action": "type", "param": "#nama", "extra": "{{line[0]}}" },
+    { "action": "type", "param": "#email", "extra": "{{line[1]}}" },
+    { "action": "selectDropdown", "param": "#gender|{{line[2]}}", "extra": "" },
+    { "action": "click", "param": "#registerBtn", "extra": "" },
+    { "action": "delay", "param": "1000", "extra": "" },
+    { "action": "if_start", "param": "exists .success-message", "extra": "" },
+    { "action": "show_alert", "param": "Registrasi sukses", "extra": "success|3000|center" },
+    { "action": "collectData", "param": "nama,email,status", "extra": "sukses" },
+    { "action": "else_if", "param": "exists .error-message", "extra": "" },
+    { "action": "show_alert", "param": "Registrasi gagal: email sudah digunakan", "extra": "error|3000|center" },
+    { "action": "collectData", "param": "nama,email,status", "extra": "gagal" },
+    { "action": "else", "param": "", "extra": "" },
+    { "action": "show_alert", "param": "Unknown error", "extra": "warning|3000|center" },
+    { "action": "if_end", "param": "", "extra": "" },
+    { "action": "delay", "param": "500", "extra": "" },
+    { "action": "click", "param": "#resetBtn", "extra": "" },
+    { "action": "loop_end", "param": "", "extra": "" },
+    { "action": "show_alert", "param": "Selesai semua user", "extra": "success|4000|center" }
+  ],
+  "dataset": "Andi;andi@mail.com;Laki-laki\nBudi;budi@mail.com;Laki-laki\nCici;cici@mail.com;Perempuan"
+}

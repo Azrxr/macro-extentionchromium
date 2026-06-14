@@ -1,0 +1,19 @@
+{
+  "name": "Isi Form Tunggal",
+  "steps": [
+    { "action": "navigate", "param": "https://didenkuswendi.github.io/ghosthands-index/form.html", "extra": "" },
+    { "action": "waitForPageLoad", "param": "", "extra": "" },
+    { "action": "delay", "param": 1000, "extra": "" },
+    { "action": "type", "param": "#nama", "extra": "Budi Santoso" },
+    { "action": "type", "param": "#email", "extra": "budi@example.com" },
+    { "action": "type", "param": "#usia", "extra": "28" },
+    { "action": "click_by_text", "param": "Laki-laki", "extra": "" },
+    { "action": "click_by_text", "param": "Olahraga", "extra": "" },
+    { "action": "click_by_text", "param": "Musik", "extra": "" },
+    { "action": "selectDropdown", "param": "#kota|Bandung", "extra": "" },
+    { "action": "type", "param": "#komentar", "extra": "Ini pesan dari Ghost Hands!" },
+    { "action": "type", "param": "#tanggal", "extra": "2026-06-01" },
+    { "action": "click", "param": "#simpanBtn", "extra": "" }
+  ],
+  "dataset": ""
+}

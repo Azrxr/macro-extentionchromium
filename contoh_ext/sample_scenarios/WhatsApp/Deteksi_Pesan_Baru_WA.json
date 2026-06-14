@@ -1,0 +1,51 @@
+{
+  "name": "Deteksi Pesan Baru WA + Balas (Robust)",
+  "steps": [
+    {
+      "action": "wait_for_value_change",
+      "param": "[data-testid=\"list-item-0\"] [data-testid=\"icon-unread-count\"]|text|increase",
+      "extra": "30000"
+    },
+    {
+      "action": "getVariable",
+      "param": "[data-testid=\"list-item-0\"] [data-testid=\"cell-frame-title\"] span[dir=\"auto\"]|text",
+      "extra": "pengirim"
+    },
+    {
+      "action": "type",
+      "param": "input[aria-label=\"Cari atau mulai obrolan baru\"]",
+      "extra": "{{pengirim}}"
+    },
+    {
+      "action": "delay",
+      "param": 1000,
+      "extra": ""
+    },
+    {
+      "action": "keypress",
+      "param": "ENTER",
+      "extra": ""
+    },
+    {
+      "action": "delay",
+      "param": "1000",
+      "extra": ""
+    },
+    {
+      "action": "type",
+      "param": "div[contenteditable=\"true\"]",
+      "extra": "Halo {{pengirim[0]}}, pesanmu sudah diterima."
+    },
+    {
+      "action": "keypress",
+      "param": "ENTER",
+      "extra": ""
+    },
+    {
+      "action": "show_alert",
+      "param": "✅ Balasan terkirim ke {{pengirim[0]}}",
+      "extra": "success|4000|center"
+    }
+  ],
+  "dataset": ""
+}

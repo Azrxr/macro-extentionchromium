@@ -1,0 +1,1 @@
+Chrome Extension Manifest V3 with `chrome.sidePanel`, `chrome.scripting`, and `chrome.storage.local` APIs; no external build tooling or frameworks beyond vanilla JS and Google Fonts (Outfit).

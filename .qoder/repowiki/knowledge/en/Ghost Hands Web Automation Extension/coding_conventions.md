@@ -1,0 +1,3 @@
+- Actions are defined as JSON objects with `action`, `param`, and `extra` fields, processed sequentially by the `executeSteps` interpreter.
+- DOM interactions primarily use CSS selectors passed to `executeInPage` helpers, which run in the page context via `chrome.scripting.executeScript`.
+- Control flow (loops, conditionals) is implemented using paired start/end action tokens (e.g., `loop_start`/`loop_end`, `if_start`/`if_end`) managed by an internal stack in `GhostState`.

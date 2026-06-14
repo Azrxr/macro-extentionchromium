@@ -1,0 +1,91 @@
+{
+  "name": "Isi Form dengan 10 Data (Demo)",
+  "steps": [
+    {
+      "action": "navigate",
+      "param": "https://didenkuswendi.github.io/ghosthands-index/form.html",
+      "extra": ""
+    },
+    {
+      "action": "waitForPageLoad",
+      "param": "",
+      "extra": ""
+    },
+    {
+      "action": "delay",
+      "param": 1000,
+      "extra": ""
+    },
+    {
+      "action": "loop_start",
+      "param": "auto",
+      "extra": ""
+    },
+    {
+      "action": "type",
+      "param": "#nama",
+      "extra": "{{line[0]}}"
+    },
+    {
+      "action": "type",
+      "param": "#email",
+      "extra": "{{line[1]}}"
+    },
+    {
+      "action": "type",
+      "param": "#usia",
+      "extra": "{{line[2]}}"
+    },
+    {
+      "action": "click_by_text",
+      "param": "{{line[3]}}",
+      "extra": ""
+    },
+    {
+      "action": "click_by_text",
+      "param": "{{line[4]}}",
+      "extra": ""
+    },
+    {
+      "action": "selectDropdown",
+      "param": "#kota|{{line[5]}}",
+      "extra": ""
+    },
+    {
+      "action": "type",
+      "param": "#komentar",
+      "extra": "{{line[6]}}"
+    },
+    {
+      "action": "type",
+      "param": "#tanggal",
+      "extra": "{{line[7]}}"
+    },
+    {
+      "action": "click",
+      "param": "#simpanBtn",
+      "extra": ""
+    },
+    {
+      "action": "delay",
+      "param": 500,
+      "extra": ""
+    },
+    {
+      "action": "click",
+      "param": "#resetBtn",
+      "extra": ""
+    },
+    {
+      "action": "delay",
+      "param": 300,
+      "extra": ""
+    },
+    {
+      "action": "loop_end",
+      "param": "",
+      "extra": ""
+    }
+  ],
+  "dataset": "Desta Putra;desta@mail.com;28;Laki-laki;Olahraga;Surabaya;Mantap sekali form nya, mudah digunakan.;2026-06-01\nElsa Anindya;elsa@mail.com;25;Perempuan;Musik;Bandung;Desainnya keren, mirip aplikasi modern.;2026-06-01\nBima Sakti;bima@mail.com;32;Laki-laki;Traveling;Yogyakarta;Saya suka animasi saat input difokus, keren!;2026-06-01\nCitra Kirana;citra@mail.com;27;Perempuan;Membaca;Medan;Proses simpan cepat dan responsif.;2026-06-01\nDimas Aditya;dimas@mail.com;30;Laki-laki;Olahraga;Jakarta;Sangat membantu untuk demo otomatisasi.;2026-06-01\nFania Putri;fania@mail.com;23;Perempuan;Musik;Bandung;Tampilannya elegan, suka banget.;2026-06-01\nGilang Ramadan;gilang@mail.com;29;Laki-laki;Membaca;Yogyakarta;Spotlight highlight-nya membantu pengguna.;2026-06-01\nHana Salsabila;hana@mail.com;26;Perempuan;Traveling;Surabaya;Bisa diisi dengan cepat lewat script.;2026-06-01\nIndra Lesmana;indra@mail.com;35;Laki-laki;Olahraga;Jakarta;Saya jadi lebih paham cara pakai Ghost Hands.;2026-06-01\nJihan Aulia;jihan@mail.com;24;Perempuan;Musik;Medan;Luar biasa, form ini cocok untuk latihan.;2026-06-01"
+}

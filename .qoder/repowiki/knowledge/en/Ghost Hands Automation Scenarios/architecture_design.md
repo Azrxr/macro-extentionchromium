@@ -1,0 +1,4 @@
+- Uses a JSON-based Domain Specific Language (DSL) where each script defines a 'steps' array of atomic actions.
+- Supports control flow structures like 'loop_start/end', 'if_start/else/if_end' for complex logic.
+- Integrates data-driven testing via an embedded 'dataset' field, using '{{line[n]}}' or '{{arrName[index]}}' syntax for variable substitution.
+- Relies on a shared runtime engine (implied by 'GhostState' and action types) to execute DOM manipulations, navigation, and alerts.

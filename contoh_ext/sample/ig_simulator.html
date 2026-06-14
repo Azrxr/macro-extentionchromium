@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Instagram Simulator - Diden Kuswendi</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #fafafa;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      padding-bottom: 40px;
+    }
+
+    .instagram-container {
+      max-width: 935px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    /* Profil Header */
+    .profile-header {
+      display: flex;
+      padding: 30px 20px 20px;
+      gap: 30px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid #dbdbdb;
+    }
+
+    .avatar-section {
+      flex-shrink: 0;
+    }
+
+    .avatar {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #e4405f, #f77737);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 64px;
+      color: white;
+      overflow: hidden;
+    }
+
+    .info-section {
+      flex: 1;
+    }
+
+    .username-row {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .username {
+      font-size: 28px;
+      font-weight: 300;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-follow-main, .btn-message, .btn-more {
+      background: #0095f6;
+      border: none;
+      color: white;
+      font-weight: 600;
+      padding: 7px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .btn-message {
+      background: #efefef;
+      color: #262626;
+    }
+
+    .btn-more {
+      background: #efefef;
+      color: #262626;
+      font-size: 18px;
+      padding: 7px 12px;
+    }
+
+    .stats {
+      display: flex;
+      gap: 40px;
+      margin-bottom: 20px;
+      cursor: pointer;
+    }
+
+    .stat {
+      font-size: 16px;
+    }
+
+    .stat-number {
+      font-weight: 700;
+    }
+
+    .bio-section {
+      margin-bottom: 10px;
+    }
+
+    .fullname {
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .bio-text {
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .link {
+      color: #00376b;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    /* Highlights */
+    .highlights {
+      display: flex;
+      gap: 20px;
+      padding: 20px 20px 10px;
+      border-bottom: 1px solid #dbdbdb;
+      overflow-x: auto;
+    }
+
+    .highlight-item {
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .highlight-circle {
+      width: 77px;
+      height: 77px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #f09433, #d62976);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 5px;
+    }
+
+    .highlight-icon {
+      width: 70px;
+      height: 70px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+    }
+
+    .highlight-name {
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* Grid postingan */
+    .posts-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+      background: #fafafa;
+      padding: 0 4px;
+    }
+
+    .post-item {
+      aspect-ratio: 1 / 1;
+      background-size: cover;
+      background-position: center;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .post-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.3);
+      opacity: 0;
+      transition: opacity 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      color: white;
+      font-weight: 600;
+    }
+
+    .post-item:hover .post-overlay {
+      opacity: 1;
+    }
+
+    /* Popup yang mirip Instagram (Followers / Following) */
+    .popup-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .popup-container {
+      background: white;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 400px;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .popup-header {
+      padding: 16px;
+      border-bottom: 1px solid #dbdbdb;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .close-popup {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .user-list {
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .user-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      gap: 12px;
+      border-bottom: 1px solid #efefef;
+    }
+
+    .user-avatar {
+      width: 44px;
+      height: 44px;
+      background: #ccc;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    .user-info {
+      flex: 1;
+    }
+
+    .user-username {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .user-name {
+      font-size: 12px;
+      color: #8e8e8e;
+    }
+
+    .follow-btn {
+      background: #0095f6;
+      border: none;
+      color: white;
+      font-weight: 600;
+      padding: 6px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 12px;
+      min-width: 72px;
+    }
+
+    .follow-btn.following {
+      background: #efefef;
+      color: #262626;
+    }
+
+    .toast-msg {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #262626;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      z-index: 1100;
+      display: none;
+    }
+
+    @media (max-width: 735px) {
+      .profile-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      .stats {
+        justify-content: center;
+      }
+      .username-row {
+        justify-content: center;
+      }
+    }
+    /* DM Popup */
+.dm-popup-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+.dm-container {
+  background: white;
+  border-radius: 24px;
+  width: 90%;
+  max-width: 380px;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
+}
+
+.dm-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid #dbdbdb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  background: white;
+}
+
+.dm-header .back-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #262626;
+  display: none; /* untuk mode chat tunggal, tidak perlu back */
+}
+
+.dm-header .close-dm {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #262626;
+}
+
+.dm-header .username {
+  font-size: 16px;
+}
+
+.dm-messages {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #fafafa;
+}
+
+.message {
+  display: flex;
+  max-width: 80%;
+}
+
+.message.received {
+  align-self: flex-start;
+}
+
+.message.sent {
+  align-self: flex-end;
+}
+
+.message-bubble {
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.received .message-bubble {
+  background: white;
+  border: 1px solid #dbdbdb;
+  color: #262626;
+}
+
+.sent .message-bubble {
+  background: #0095f6;
+  color: white;
+}
+
+.dm-input-area {
+  display: flex;
+  padding: 12px 16px;
+  border-top: 1px solid #dbdbdb;
+  background: white;
+  gap: 8px;
+}
+
+.dm-input-area input {
+  flex: 1;
+  border: none;
+  padding: 8px 0;
+  font-size: 14px;
+  outline: none;
+}
+
+.dm-input-area button {
+  background: none;
+  border: none;
+  color: #0095f6;
+  font-weight: 600;
+  cursor: pointer;
+}
+  </style>
+</head>
+<body>
+
+<!-- DM Popup -->
+<div id="dmPopup" class="dm-popup-overlay">
+  <div class="dm-container">
+    <div class="dm-header">
+      <span class="username">didenkuswendi</span>
+      <button class="close-dm" id="closeDmBtn">&times;</button>
+    </div>
+    <div class="dm-messages" id="dmMessages">
+      <!-- pesan akan muncul di sini -->
+    </div>
+    <div class="dm-input-area">
+      <input type="text" id="dmInput" placeholder="Pesan..." autocomplete="off">
+      <button id="sendDmBtn">Kirim</button>
+    </div>
+  </div>
+</div>
+
+<div class="instagram-container">
+  <!-- Header Profil -->
+  <div class="profile-header">
+    <div class="avatar-section">
+      <div class="avatar">
+        <span>👻</span>
+      </div>
+    </div>
+    <div class="info-section">
+      <div class="username-row">
+        <span class="username">didenkuswendi</span>
+        <div class="action-buttons">
+          <button class="btn-follow-main" id="mainFollowBtn">Follow</button>
+          <button class="btn-message">Message</button>
+          <button class="btn-more">⋯</button>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat" id="postsStat"><span class="stat-number">12</span> posts</div>
+        <div class="stat" id="followersStat"><span class="stat-number">1,234</span> followers</div>
+        <div class="stat" id="followingStat"><span class="stat-number">187</span> following</div>
+      </div>
+      <div class="bio-section">
+        <div class="fullname">Diden Kuswendi</div>
+        <div class="bio-text">👨‍💻 Developer Ghost Hands | Automation Enthusiast<br>✨ Building tools to make life easier<br>🔗 <a href="https://www.didenkuswendi.com" target="_blank" class="link">www.didenkuswendi.com</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Highlights -->
+  <div class="highlights">
+    <div class="highlight-item">
+      <div class="highlight-circle"><div class="highlight-icon">🤖</div></div>
+      <div class="highlight-name">Bot</div>
+    </div>
+    <div class="highlight-item">
+      <div class="highlight-circle"><div class="highlight-icon">⚡</div></div>
+      <div class="highlight-name">Automation</div>
+    </div>
+    <div class="highlight-item">
+      <div class="highlight-circle"><div class="highlight-icon">👻</div></div>
+      <div class="highlight-name">Ghost</div>
+    </div>
+    <div class="highlight-item">
+      <div class="highlight-circle"><div class="highlight-icon">📘</div></div>
+      <div class="highlight-name">Tips</div>
+    </div>
+  </div>
+
+  <!-- Grid postingan -->
+  <div class="posts-grid" id="postsGrid"></div>
+</div>
+
+<!-- Popup untuk Followers / Following (dinamis) -->
+<div id="userPopup" class="popup-overlay">
+  <div class="popup-container">
+    <div class="popup-header">
+      <span id="popupTitle">Followers</span>
+      <button class="close-popup" id="closePopupBtn">&times;</button>
+    </div>
+    <div class="user-list" id="userList">
+      <!-- daftar user akan diisi -->
+    </div>
+  </div>
+</div>
+
+<div id="toastMsg" class="toast-msg"></div>
+
+<script>
+  // Data postingan
+  const postsData = [
+    { img: "https://placehold.co/400x400/ff6b6b/white?text=👻", likes: 234, caption: "Ghost Hands v1.0 released!" },
+    { img: "https://placehold.co/400x400/4ecdc4/white?text=🤖", likes: 189, caption: "Automation tips" },
+    { img: "https://placehold.co/400x400/ffe66d/white?text=⚡", likes: 342, caption: "Speed up your workflow" },
+    { img: "https://placehold.co/400x400/1a535c/white?text=📘", likes: 123, caption: "Documentation update" },
+    { img: "https://placehold.co/400x400/ff9f1c/white?text=🎯", likes: 567, caption: "Precision automation" },
+    { img: "https://placehold.co/400x400/2ec4b6/white?text=🔄", likes: 432, caption: "Loop & dataset demo" },
+    { img: "https://placehold.co/400x400/e71d36/white?text=💀", likes: 298, caption: "Dirty Hands" },
+    { img: "https://placehold.co/400x400/ffb347/white?text=🎨", likes: 176, caption: "Customizable" },
+    { img: "https://placehold.co/400x400/5a189a/white?text=🚀", likes: 510, caption: "Launch day!" }
+  ];
+
+  function renderPosts() {
+    const grid = document.getElementById('postsGrid');
+    grid.innerHTML = '';
+    postsData.forEach(post => {
+      const div = document.createElement('div');
+      div.className = 'post-item';
+      div.style.backgroundImage = `url(${post.img})`;
+      div.style.backgroundSize = 'cover';
+      div.innerHTML = `<div class="post-overlay"><span>❤️ ${post.likes}</span></div>`;
+      grid.appendChild(div);
+    });
+  }
+  renderPosts();
+
+  // Data followers (dummy)
+  const followersList = [
+    { username: "alice_wonder", name: "Alice Wonder", avatar: "🌸", isFollowing: false },
+    { username: "bob_adventure", name: "Bob Adventure", avatar: "🧗", isFollowing: false },
+    { username: "carol_art", name: "Carol Art", avatar: "🎨", isFollowing: true },
+    { username: "dave_travel", name: "Dave Travel", avatar: "✈️", isFollowing: false },
+    { username: "emma_code", name: "Emma Code", avatar: "💻", isFollowing: true },
+    { username: "frank_fitness", name: "Frank Fitness", avatar: "🏋️", isFollowing: false }
+  ];
+
+  // Data following (dummy) - bebas follow/unfollow
+  let followingList = [
+    { username: "john_doe", name: "John Doe", avatar: "👤", isFollowing: true },
+    { username: "jane_smith", name: "Jane Smith", avatar: "👩", isFollowing: true },
+    { username: "tech_guru", name: "Tech Guru", avatar: "📱", isFollowing: true },
+    { username: "travel_blog", name: "Travel Blog", avatar: "🌍", isFollowing: true },
+    { username: "foodie_delight", name: "Foodie Delight", avatar: "🍕", isFollowing: true },
+    { username: "fitness_coach", name: "Fitness Coach", avatar: "💪", isFollowing: true }
+  ];
+
+  let currentPopupMode = 'following'; // 'followers' or 'following'
+
+  function renderUserList(mode) {
+    const container = document.getElementById('userList');
+    const titleSpan = document.getElementById('popupTitle');
+    if (!container) return;
+    container.innerHTML = '';
+    const list = mode === 'followers' ? followersList : followingList;
+    titleSpan.innerText = mode === 'followers' ? 'Followers' : 'Following';
+
+    list.forEach((user, idx) => {
+      const div = document.createElement('div');
+      div.className = 'user-item';
+      div.setAttribute('data-username', user.username);
+      div.setAttribute('data-index', idx);
+      div.innerHTML = `
+        <div class="user-avatar">${user.avatar}</div>
+        <div class="user-info">
+          <div class="user-username">${user.username}</div>
+          <div class="user-name">${user.name}</div>
+        </div>
+        <button class="follow-btn ${user.isFollowing ? 'following' : ''}" data-action="toggle">${user.isFollowing ? 'Unfollow' : 'Follow'}</button>
+      `;
+      container.appendChild(div);
+    });
+
+    // Event listener untuk tombol follow/unfollow di dalam popup
+    document.querySelectorAll('#userList .follow-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const item = btn.closest('.user-item');
+        const username = item.getAttribute('data-username');
+        const index = parseInt(item.getAttribute('data-index'));
+        let targetList = currentPopupMode === 'followers' ? followersList : followingList;
+        const user = targetList[index];
+        if (!user) return;
+        user.isFollowing = !user.isFollowing;
+        // Update tampilan tombol
+        if (user.isFollowing) {
+          btn.textContent = 'Unfollow';
+          btn.classList.add('following');
+          showToast(`✅ Mengikuti @${user.username}`);
+        } else {
+          btn.textContent = 'Follow';
+          btn.classList.remove('following');
+          showToast(`❌ Berhenti mengikuti @${user.username}`);
+        }
+        // Update jumlah following di profil (jika mode following) atau followers? Tapi biarkan konsisten
+        updateStatsCounts();
+      });
+    });
+  }
+
+  function updateStatsCounts() {
+    // Update jumlah following
+    const followingCountSpan = document.querySelector('#followingStat .stat-number');
+    const newFollowingCount = followingList.filter(u => u.isFollowing).length;
+    if (followingCountSpan) followingCountSpan.innerText = newFollowingCount;
+    // Update followers? hanya jika ada perubahan dari followersList - tidak perlu karena kita tidak mengubah followers di sini
+    // tapi untuk konsistensi, followers tetap statis
+  }
+
+  function showToast(msg) {
+    const toast = document.getElementById('toastMsg');
+    toast.textContent = msg;
+    toast.style.display = 'block';
+    setTimeout(() => {
+      toast.style.display = 'none';
+    }, 1500);
+  }
+
+  // Popup control
+  const popup = document.getElementById('userPopup');
+  const closePopupBtn = document.getElementById('closePopupBtn');
+
+  function openPopup(mode) {
+    currentPopupMode = mode;
+    renderUserList(mode);
+    popup.style.display = 'flex';
+  }
+
+  closePopupBtn.onclick = () => {
+    popup.style.display = 'none';
+  };
+  popup.addEventListener('click', (e) => {
+    if (e.target === popup) popup.style.display = 'none';
+  });
+
+  // Event listener untuk klik pada stats followers dan following
+  const followersStat = document.getElementById('followersStat');
+  const followingStat = document.getElementById('followingStat');
+
+  followersStat.addEventListener('click', () => openPopup('followers'));
+  followingStat.addEventListener('click', () => openPopup('following'));
+
+  // Tombol follow utama di profil
+  let mainFollowing = true;
+  const mainFollowBtn = document.getElementById('mainFollowBtn');
+  mainFollowBtn.onclick = () => {
+    mainFollowing = !mainFollowing;
+    mainFollowBtn.textContent = mainFollowing ? 'Follow' : 'Unfollow';
+    showToast(mainFollowing ? '✅ Mengikuti @didenkuswendi' : '❌ Berhenti mengikuti @didenkuswendi');
+    // Update followers count simulasi
+    const followersSpan = document.querySelector('#followersStat .stat-number');
+    let curr = parseInt(followersSpan.innerText.replace(',', ''));
+    if (mainFollowing) {
+      followersSpan.innerText = (curr + 1).toLocaleString();
+    } else {
+      followersSpan.innerText = (curr - 1).toLocaleString();
+    }
+  };
+
+  // Inisialisasi jumlah following awal
+  updateStatsCounts();
+
+  console.log("Simulasi Instagram siap. Klik angka followers atau following untuk membuka popup.");
+
+  // ========== SIMULASI DM INSTAGRAM ==========
+const dmPopup = document.getElementById('dmPopup');
+const dmMessages = document.getElementById('dmMessages');
+const dmInput = document.getElementById('dmInput');
+const sendDmBtn = document.getElementById('sendDmBtn');
+const closeDmBtn = document.getElementById('closeDmBtn');
+
+// Pesan awal (simulasi)
+const initialMessages = [
+  { text: "Halo, ada yang bisa saya bantu? 😊", type: "received" }
+];
+
+function addMessage(text, type) {
+  const msgDiv = document.createElement('div');
+  msgDiv.className = `message ${type}`;
+  msgDiv.innerHTML = `<div class="message-bubble">${escapeHtml(text)}</div>`;
+  dmMessages.appendChild(msgDiv);
+  dmMessages.scrollTop = dmMessages.scrollHeight;
+}
+
+function escapeHtml(str) {
+  return str.replace(/[&<>]/g, function(m) {
+    if (m === '&') return '&amp;';
+    if (m === '<') return '&lt;';
+    if (m === '>') return '&gt;';
+    return m;
+  });
+}
+
+// Buka DM popup
+document.querySelector('.btn-message')?.addEventListener('click', () => {
+  // Reset chat jika perlu (atau biarkan percakapan berlanjut)
+  if (dmMessages.children.length === 0) {
+    initialMessages.forEach(msg => addMessage(msg.text, msg.type));
+  }
+  dmPopup.style.display = 'flex';
+});
+
+// Kirim pesan
+function sendMessage() {
+  const text = dmInput.value.trim();
+  if (text === '') return;
+  addMessage(text, 'sent');
+  dmInput.value = '';
+  // Simulasi balasan otomatis setelah 500ms
+  setTimeout(() => {
+    addMessage("Terima kasih pesannya! Saya akan segera merespon. 🚀", "received");
+  }, 500);
+}
+
+sendDmBtn.addEventListener('click', sendMessage);
+dmInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') sendMessage();
+});
+
+// Tutup DM
+closeDmBtn.addEventListener('click', () => {
+  dmPopup.style.display = 'none';
+});
+dmPopup.addEventListener('click', (e) => {
+  if (e.target === dmPopup) dmPopup.style.display = 'none';
+});
+
+// Catatan: pastikan tidak ada duplikasi event listener pada tombol message.
+// Jika sebelumnya tombol message sudah punya event, kita ganti atau tambahkan.
+// Pada kode sebelumnya tombol .btn-message hanya sebagai tampilan, belum punya event.
+</script>
+</body>
+</html>

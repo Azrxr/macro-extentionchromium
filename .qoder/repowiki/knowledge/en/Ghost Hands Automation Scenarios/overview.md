@@ -1,0 +1,1 @@
+A library of declarative JSON automation scripts that orchestrate web interactions through a standardized step-based DSL.

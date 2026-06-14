@@ -1,0 +1,90 @@
+{
+  "name": "✨ 1. Otomatis Input Data ke Tabel Web (DemoQA)",
+  "steps": [
+    {
+      "action": "navigate",
+      "param": "https://demoqa.com/webtables",
+      "extra": ""
+    },
+    {
+      "action": "delay",
+      "param": "2000",
+      "extra": ""
+    },
+    {
+      "_comment": "Ambil Data dari Tabel Sumber (Simulasi)",
+      "action": "getVariable",
+      "param": ".rt-tr-group:nth-child(1) .rt-td:nth-child(1) .rt-resizable-header-content|text",
+      "extra": "arrNama"
+    },
+    {
+      "_comment": "Loop untuk memproses setiap baris data",
+      "action": "loop_start",
+      "param": "3",
+      "extra": ""
+    },
+    {
+      "_comment": "Klik tombol 'Add' untuk membuka form",
+      "action": "click",
+      "param": "#addNewRecordButton",
+      "extra": ""
+    },
+    {
+      "action": "delay",
+      "param": "1000",
+      "extra": ""
+    },
+    {
+      "_comment": "Isi form dengan data contoh (bisa di- customize)",
+      "action": "type",
+      "param": "#firstName",
+      "extra": "John {{loopIndex}}"
+    },
+    {
+      "action": "type",
+      "param": "#lastName",
+      "extra": "Doe {{loopIndex}}"
+    },
+    {
+      "action": "type",
+      "param": "#userEmail",
+      "extra": "john.doe{{loopIndex}}@example.com"
+    },
+    {
+      "action": "type",
+      "param": "#age",
+      "extra": "30"
+    },
+    {
+      "action": "type",
+      "param": "#salary",
+      "extra": "50000"
+    },
+    {
+      "action": "type",
+      "param": "#department",
+      "extra": "IT"
+    },
+    {
+      "action": "click_by_text",
+      "param": "Submit | 3",
+      "extra": ""
+    },
+    {
+      "action": "delay",
+      "param": "1000",
+      "extra": ""
+    },
+    {
+      "action": "loop_end",
+      "param": "",
+      "extra": ""
+    },
+    {
+      "action": "show_alert",
+      "param": "✅ Selesai! Semua data berhasil diinput!",
+      "extra": "success|4000|center"
+    }
+  ],
+  "dataset": ""
+}

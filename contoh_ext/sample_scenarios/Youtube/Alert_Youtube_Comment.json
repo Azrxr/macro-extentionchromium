@@ -1,0 +1,41 @@
+{
+  "name": "Notif Youtube Comment",
+  "steps": [
+    {
+      "action": "getVariable",
+      "param": "#comment-container",
+      "extra": "datakomen"
+    },
+    {
+      "action": "loop_start",
+      "param": "{{datakomen.length}}",
+      "extra": ""
+    },
+    {
+      "action": "getVariable",
+      "param": "#author-text",
+      "extra": "author"
+    },
+    {
+      "action": "getVariable",
+      "param": "span.ytAttributedStringHost",
+      "extra": "komentar"
+    },
+    {
+      "action": "show_alert",
+      "param": "{{author[{{loopIndex}}]}} : {{komentar[{{loopIndex}}]}}",
+      "extra": ""
+    },
+    {
+      "action": "delay",
+      "param": 1000,
+      "extra": ""
+    },
+    {
+      "action": "loop_end",
+      "param": "",
+      "extra": ""
+    }
+  ],
+  "dataset": ""
+}

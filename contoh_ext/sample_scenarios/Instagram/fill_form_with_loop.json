@@ -1,0 +1,10 @@
+{
+  "name": "Isi Form dengan Dataset",
+  "steps": [
+    { "action": "loop_start", "param": "auto", "extra": "" },
+    { "action": "type", "param": "input[name='nama']", "extra": "{{line[0]}}" },
+    { "action": "type", "param": "input[name='email']", "extra": "{{line[1]}}" },
+    { "action": "delay", "param": 500, "extra": "" },
+    { "action": "loop_end", "param": "", "extra": "" }
+  ]
+}

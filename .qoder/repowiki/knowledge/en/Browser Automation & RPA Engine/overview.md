@@ -1,0 +1,1 @@
+A Manifest V3 extension providing record-and-playback browser automation with CSV-driven data looping and a glassmorphic sidepanel UI.

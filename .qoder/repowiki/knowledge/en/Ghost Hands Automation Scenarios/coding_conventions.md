@@ -1,0 +1,4 @@
+- Each scenario file must contain a 'name' field and a 'steps' array.
+- Actions use a consistent structure: { "action": "string", "param": "string|number", "extra": "string" }.
+- Variables from datasets are referenced using double curly braces, e.g., {{line[0]}} or {{variableName[index]}}.
+- Control flow blocks are explicitly opened and closed with paired actions like 'loop_start' and 'loop_end'.

@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="sidepanel.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <!-- Compact Bar (muncul saat collapsed) -->
+  <div id="compactBar" class="compact-bar" style="display: none;">
+    <button id="expandPanelBtn" class="btn-icon" title="Kembalikan panel">◀</button>
+    <span class="compact-icon">👻</span>
+  </div>
+  <div class="container">
+    <div class="sticky-header">
+      <span class="ghost-icon">👻</span>
+      <h2>Ghost Hands</h2>
+      <div style="display: flex; gap: 8px; margin-left: auto;">
+        <button id="minimizePanelBtn" class="btn-icon" title="Minimize panel">◀</button>
+        <div id="updateBell" class="update-bell" style="display: none;">
+          <span class="bell-icon">🔔</span>
+          <span class="badge">1</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Tab navigasi: hanya Dirty Hands dan Panduan -->
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="dirty">💀 Dirty Hands</button>
+      <button class="tab-btn" data-tab="guide">📘 Death Notes</button>
+    </div>
+
+    <!-- ========= TAB DIRTY HANDS ========= -->
+    <div id="dirty-tab" class="tab-content active">
+      <div class="form-group scenario-name-group">
+        <label>Nama Skenario (opsional):</label>
+        <input type="text" id="scenarioName" placeholder="Misal: Login Automation">
+      </div>
+
+      <!-- Dataset untuk teks dinamis -->
+      <div class="form-group dataset-group">
+        <label>📋 Dataset (satu baris per item, gunakan {{line}} di step Ketik Teks):</label>
+        <textarea id="datasetLines" rows="4" placeholder="Baris 1&#10;Baris 2&#10;Baris 3"></textarea>
+        <button id="loadDatasetBtn" class="btn-secondary" style="margin-top: 5px;">📂 Load dari file .txt</button>
+        <div style="font-size: 0.7rem; margin-top: 5px;">💡 Contoh: jika dataset berisi 3 baris, maka step dengan teks "{{line}}" akan mengetik baris 1,2,3 secara berurutan (setiap eksekusi step akan maju ke baris berikutnya).</div>
+      </div>
+
+      <!-- Form tambah step baru (Layout lebih lega) -->
+      <div class="step-add-form">
+        <h4>➕ Tambah Step Baru</h4>
+        
+        <!-- Grid layout -->
+        <div class="step-add-grid">
+          <!-- Jenis Aksi + tombol bantuan -->
+          <div class="form-group full-width">
+            <label>📌 Jenis Aksi</label>
+            <div class="action-select-wrapper">
+              <select id="newStepAction">
+                <optgroup label="🌐 Navigasi & Tab">
+                  <option value="navigate">🌐 Navigasi ke URL</option>
+                  <option value="click_open_new_tab">🔗 Klik & Buka Tab Baru</option>
+                  <option value="close_tab">❌ Tutup Tab Saat Ini</option>
+                </optgroup>
+                <optgroup label="🖱️ Klik Interaksi">
+                  <option value="click">🖱️ Klik element</option>
+                  <option value="click_by_text">🖱️ Klik by Teks</option>
+                  <option value="click_each">🖱️ Klik semua elemen</option>
+                  <option value="hover">🖱️ Hover</option>
+                </optgroup>
+                <optgroup label="⌨️ Input & Keyboard">
+                  <option value="type">⌨️ Ketik teks</option>
+                  <option value="uploadFile">📤 Upload File</option>
+                  <option value="selectDropdown">📋 Pilih Dropdown</option>
+                  <option value="keypress">⌨️ Tekan Tombol</option>
+                </optgroup>
+                <optgroup label="📜 Scroll">
+                  <option value="scroll">📜 Scroll</option>
+                </optgroup>
+                <optgroup label="⏳ Menunggu">
+                  <option value="waitForElement">⏳ Tunggu elemen</option>
+                  <option value="waitForNetworkIdle">⏳ Tunggu Network Idle</option>
+                  <option value="waitForPageLoad">⏳ Tunggu load</option>
+                  <option value="wait_until">⏳ Wait Until</option>
+                  <option value="wait_for_value_change">⏳ Tunggu Perubahan Nilai</option>
+                </optgroup>
+                <optgroup label="⚙️ Kontrol Alur">
+                  <option value="delay">⏱️ Delay</option>
+                  <option value="random_delay">🎲 Random Delay</option>
+                  <option value="loop_start">🔁 Start Loop</option>
+                  <option value="loop_end">🔚 End Loop</option>
+                  <option value="break">⏹️ Break</option>
+                  <option value="if_start">🔀 If</option>
+                  <option value="else_if">🔀 Else If</option>
+                  <option value="else">🔀 Else</option>
+                  <option value="if_end">🔚 End If</option>
+                  <option value="loop_while_start">🔄 Loop While</option>
+                  <option value="loop_while_end">🔚 End Loop While</option>
+                </optgroup>
+                <optgroup label="🔢 Variable & Data">
+                  <option value="getVariable">🔍 Ambil Variabel</option>
+                  <option value="set_variable">📝 Set Variabel (deklarasi nilai)</option>
+                </optgroup>
+                <optgroup label="⚡ Super Action">
+                  <option value="execute_js">⚡ Execute JS</option>
+                  <option value="retry">🔄 Retry</option>
+                </optgroup>
+                <optgroup label="📊 Data Collector">
+                  <option value="collectData">📊 Collect Data</option>
+                </optgroup>
+                <optgroup label="💬 Notifikasi">
+                  <option value="show_alert">🔔 Alert</option>
+                  <option value="show_fullscreen_overlay">🖥️ Overlay Penuh</option>
+                </optgroup>
+              </select>
+              <button id="helpActionBtn" class="btn-icon" title="Panduan Aksi">❓</button>
+            </div>
+          </div>
+
+          <!-- Parameter + Suggest -->
+          <div class="form-group full-width param-group">
+            <label>🔧 Parameter</label>
+            <div class="param-wrapper">
+              <input type="text" id="newStepParam" placeholder="css selector / teks / kondisi" autocomplete="off">
+              <button id="suggestTextBtn" class="btn-icon" title="Suggest elemen">🔍</button>
+              <div id="suggestList" class="suggest-list"></div>
+            </div>
+          </div>
+
+          <!-- Nilai tambahan + Tombol tambah step -->
+          <div class="form-group extra-group">
+            <label>📝 Nilai tambahan (opsional)</label>
+            <input type="text" id="newStepExtra" placeholder="teks, delay, dsb.">
+          </div>
+          <div class="add-step-btn-wrap">
+            <button id="addStepBtn" class="btn-execute">+ Tambah Step</button>
+          </div>
+        </div>
+
+        <!-- Action Guide Card (tetap sama) -->
+        <div id="actionGuideCard" class="action-guide-card" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <strong id="actionGuideLabel"></strong>
+            <button id="closeGuideBtn" style="background: none; border: none; color: #aaa; cursor: pointer; font-size: 1.2rem;">&times;</button>
+          </div>
+          <div id="actionGuideContent" style="margin-top: 6px; color: #ccc;"></div>
+        </div>
+      </div>
+
+      <!-- Daftar step yang sudah dibuat -->
+      <div class="steps-list">
+        <!-- TAB NAVIGASI: Daftar Step vs Data Collector -->
+        <div class="tab-container">
+          <button id="showStepsTabBtn" class="tab-button active">📋 Daftar Step</button>
+          <button id="showDataTabBtn" class="tab-button">📊 Data Collector</button>
+        </div>
+
+        <!-- PANEL 1: Daftar Step -->
+        <div id="stepsTableContainer" class="tab-pane active">
+          <div class="steps-structure-panel">
+            <div class="structure-header">
+              <span>📊 Struktur Skenario</span>
+              <button id="toggleStructureBtn" class="btn-icon" title="Tampilkan struktur">🗖</button>
+            </div>
+            <div id="structureTree" class="structure-tree" style="display: none;">
+              <pre>Belum ada step</pre>
+            </div>
+          </div>
+          <!-- Tombol aksi untuk step -->
+          <div class="action-bar">
+            <button id="testRunBtn" class="btn-icon" title="Uji Coba (buka halaman demo & muat skenario)">🧪</button>
+            <button id="recordBtn" class="btn-icon record-btn" title="Rekam Aktivitas (mulai merekam klik, ketik, dropdown)">🔴</button>
+            <button id="stopRecordBtn" class="btn-icon stop-record-btn" title="Hentikan Rekam" style="display:none;">⏹️</button>
+            <button id="saveScenarioBtn" class="btn-icon" title="Simpan Skenario (JSON)">💾</button>
+            <button id="loadScenarioBtn" class="btn-icon" title="Load Skenario (JSON)">📂</button>
+            <button id="clearStepsBtn" class="btn-icon" title="Clear Steps (hapus semua step)">🗑️</button>
+            <button id="stopDirtyBtn" class="btn-icon btn-danger" title="Stop (hentikan eksekusi)">⏹️</button>
+          </div>
+
+          <!-- Tabel daftar step -->
+          <div id="stepsTableContainer">
+            <table id="stepsTable">
+              <thead>
+                <tr><th>No</th><th>Aksi</th><th>Parameter</th><th>Extra</th><th>Aksi</th></tr>
+              </thead>
+              <tbody id="stepsTbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- PANEL 2: Data Collector -->
+        <div id="dataTableContainer" class="tab-pane">
+          <div class="form-group">
+            <label>📋 Nama Dataset (opsional):</label>
+            <input type="text" id="datasetName" placeholder="Misal: Data Follower">
+          </div>
+          <div class="form-group">
+            <label>➕ Kolom Data:</label>
+            <div id="columnsContainer"></div>
+            <button id="addColumnBtn" class="btn-secondary" style="margin-top: 8px;">+ Tambah Kolom</button>
+          </div>
+          <div class="form-group">
+            <label>🔍 Cakupan Data (selector untuk setiap item):</label>
+            <div style="display: flex; gap: 8px;">
+              <input type="text" id="itemSelector" placeholder=".item, tr, [data-row]">
+              <button id="detectTableBtn" class="btn-icon" title="Deteksi tabel di halaman">📊 Deteksi Tabel</button>
+              <button id="detectPatternBtn" class="btn-icon" title="Deteksi pola berulang">🔍 Suggest</button>
+            </div>
+            <small>Selector yang menunjuk ke setiap item (misal .follower-item, tr). Biarkan kosong jika hanya satu item di halaman.</small>            
+          </div>
+          <div class="action-bar">
+            <button id="collectDataBtn" class="btn-execute">📥 Ambil Data Sekarang</button>
+            <button id="exportDataBtn" class="btn-secondary">📎 Export ke CSV</button>
+            <button id="clearDataBtn" class="btn-secondary">🗑️ Hapus Semua Data</button>
+          </div>
+          <div class="form-group">
+            <label>📊 Hasil Data:</label>
+            <div style="max-height: 300px; overflow: auto; background: #0f1a2f; border-radius: 12px;">
+              <table id="dataTable" style="width: 100%; border-collapse: collapse; font-size: 0.75rem;">
+                <thead id="dataTableHead">
+                  <tr><th>Belum ada data</th></tr>
+                </thead>
+                <tbody id="dataTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EKSEKUSI DAN LOG (di luar steps-list, selalu tampil) -->
+      <div class="action-bar">
+        <button id="executeDirtyBtn" class="btn-execute">▶ Jalankan Semua Step</button>
+      </div>
+      <div class="form-group" id="logContainer">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <label>Log Eksekusi:</label>
+          <button id="toggleLogBtn" class="btn-icon" style="background: none; font-size: 1.4rem; padding: 0 8px; cursor: pointer;" title="Maximize log">⛶</button>
+        </div>
+        <textarea id="executionLog" rows="5" readonly placeholder="Log akan muncul di sini..."></textarea>
+      </div>
+      <!-- ========== OVERLAY SENSOR (Expandable) ========== -->
+      <div class="overlay-sensor-container">
+        <div class="overlay-sensor-header" id="overlaySensorToggle">
+          <span>👁️ Sensor Overlay (Halaman)</span>
+          <span class="toggle-icon">▼</span>
+        </div>
+        <div class="overlay-sensor-content" id="overlaySensorContent" style="display: none;">
+          <div class="form-group">
+            <label>Opacity (0 = tidak aktif, 1 = penuh)</label>
+            <input type="range" id="overlayOpacitySlider" min="0" max="1" step="0.01" value="0">
+            <span id="opacityValueDisplay">0%</span>
+          </div>
+          <div class="form-group">
+            <label>Pesan yang ditampilkan (bisa kosong)</label>
+            <input type="text" id="overlayMessageText" placeholder="Misal: Sedang memproses...">
+          </div>
+          <div class="form-group">
+            <button id="applyOverlayBtn" class="btn-secondary">Terapkan Sekarang</button>
+            <button id="hideOverlayBtn" class="btn-danger">Sembunyikan Overlay</button>
+          </div>
+          <small>⚠️ Overlay akan menutupi seluruh halaman aktif. Cocok untuk menyembunyikan gerakan saat otomatisasi berjalan.</small>
+        </div>
+      </div>
+
+      <!-- Informasi Versi -->
+      <div class="version-info" id="versionInfo">
+        <span>👻 Ghost Hands v<span id="appVersion"></span></span>
+      </div>
+    </div>
+    
+      <!-- ========= TAB PANDUAN ========= -->
+      <div id="guide-tab" class="tab-content">
+        <div class="scenario-browser">
+          <h3>📂 Contoh Skenario</h3>
+          <div id="scenarioTree" class="tree-view"></div>
+          <div id="scenarioPreview" class="scenario-preview" style="display: none;">
+            <hr>
+            <h4>📄 Pratinjau Skenario</h4>
+            <pre id="scenarioPreviewContent"></pre>
+            <button id="loadScenarioBtnFromPreview" class="btn-execute">📥 Load ke Dirty Hands</button>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div id="recordStatus" style="margin-top: 8px; font-size: 0.7rem; color: #f39c12;"></div>
+      <div id="notification" class="notification"></div>
+      
+      <!-- Modal Konfirmasi Kustom -->
+      <div id="confirmModal" class="confirm-modal" style="display: none;">
+        <div class="confirm-modal-content">
+          <p id="confirmMessage"></p>
+          <div class="confirm-buttons">
+            <button id="confirmOkBtn" class="btn-execute">OK, Hapus Perangkat Tertua</button>
+            <button id="confirmCancelBtn" class="btn-secondary">Batal, Jangan Login</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Editor JavaScript -->
+      <div id="jsEditorModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 10000; align-items: center; justify-content: center;">
+        <div style="background: #1e2a47; border-radius: 16px; width: 90%; max-width: 700px; height: 80%; display: flex; flex-direction: column; overflow: hidden;">
+          <div style="padding: 12px; background: #0f1a2f; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2c3e66;">
+            <h3 style="margin:0;">✏️ Edit JavaScript</h3>
+            <button id="closeJsEditorBtn" style="background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;">&times;</button>
+          </div>
+          <textarea id="jsEditorTextarea" style="flex: 1; background: #0a0f1c; color: #e0e0e0; border: none; padding: 12px; font-family: monospace; font-size: 13px; resize: none;" placeholder="Tulis kode JavaScript di sini..."></textarea>
+          <div style="padding: 12px; border-top: 1px solid #2c3e66; display: flex; gap: 8px; justify-content: flex-end;">
+            <button id="cancelJsEditorBtn" class="btn-secondary">Batal</button>
+            <button id="saveJsEditorBtn" class="btn-primary">OK</button>
+          </div>
+        </div>
+      </div>
+      <!-- Modal Update Opsional -->
+      <div id="updateModal" class="update-modal" style="display: none;">
+        <div class="update-modal-content">
+          <div class="update-modal-header">
+            <h3>🔔 Update Tersedia</h3>
+            <button id="closeUpdateModalBtn" class="close-modal">&times;</button>
+          </div>
+          <div id="updateModalBody" class="update-modal-body">
+            <!-- Konten dinamis dari release notes -->
+          </div>
+          <div class="update-modal-footer">
+            <button id="downloadUpdateBtn" class="btn-execute">📦 Download Update</button>
+            <button id="remindLaterBtn" class="btn-secondary">⏰ Ingatkan Nanti</button>
+          </div>
+        </div>
+      </div>
+      <!-- Modal Input Jumlah Device -->
+      <div id="deviceQuantityModal" class="device-modal" style="display: none;">
+        <div class="device-modal-content">
+          <div class="device-modal-header">
+            <h3>➕ Beli Device Tambahan</h3>
+            <button id="closeDeviceModalBtn" class="close-modal">&times;</button>
+          </div>
+          <div class="device-modal-body">
+            <p>Harga per device: <strong id="modalPricePerDevice">Rp0</strong></p>
+            <p>Maksimal pembelian: <strong id="modalMaxDevice">100</strong> device</p>
+            <div class="form-group">
+              <label>Jumlah device:</label>
+              <input type="number" id="deviceQuantityInput" min="1" max="100" value="1" step="1">
+            </div>
+            <p id="modalTotalPrice" style="margin-top: 8px; font-weight: bold;">Total: Rp0</p>
+          </div>
+          <div class="device-modal-footer">
+            <button id="cancelDeviceBtn" class="btn-secondary">Batal</button>
+            <button id="confirmDeviceBtn" class="btn-execute">Beli Sekarang</button>
+          </div>
+        </div>
+      </div> 
+      <!-- Loading Overlay -->
+      <div id="loadingOverlay" class="loading-overlay" style="display: flex;">
+        <div class="loading-content">
+          <div class="ghost-loading">👻</div>
+          <div class="loading-text">Sedang konfigurasi fungsi...</div>
+          <div class="loading-spinner"></div>
+        </div>
+      </div>   
+    <script src="js/main.js"></script>
+</body>
+</html>

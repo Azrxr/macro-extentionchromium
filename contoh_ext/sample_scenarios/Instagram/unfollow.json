@@ -1,0 +1,40 @@
+{
+  "name": "Unfollower",
+  "steps": [
+    {
+      "action": "getVariable",
+      "param": "button[class=\" _aswp _aswr _aswv _asw_ _asx2\"]",
+      "extra": "following"
+    },
+    {
+      "action": "loop_start",
+      "param": "{{following.length}}",
+      "extra": ""
+    },
+    {
+      "action": "click",
+      "param": "button[class=\" _aswp _aswr _aswv _asw_ _asx2\"] | {{loopindex}}",
+      "extra": ""
+    },
+    {
+      "action": "click_by_text",
+      "param": "Unfollow",
+      "extra": ""
+    },
+    {
+      "action": "delay",
+      "param": 1000,
+      "extra": ""
+    },
+    {
+      "action": "loop_end",
+      "param": "",
+      "extra": ""
+    },
+    {
+      "action": "scroll",
+      "param": "div[role=\"dialog\"] .x6nl9eh|down|100",
+      "extra": ""
+    }
+  ]
+}

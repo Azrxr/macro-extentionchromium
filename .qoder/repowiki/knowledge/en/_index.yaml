@@ -1,0 +1,79 @@
+# 知识卡导出索引文件
+schema_version: 1
+locale: en-US
+branch: Q0DeR-MaG1C-BrAnCh-Fo2-NoN-GiT-Or-No-C0MmIt
+exported_at: "2026-06-14T13:28:30Z"
+modules:
+    "":
+        dir_name: Ghost Hands Automation Scenarios
+        title: Ghost Hands Automation Scenarios
+        scope:
+            - README.md
+            - agent.md
+            - contoh_ext\guide.html
+            - contoh_ext\icon.png
+            - contoh_ext\js\background.js
+            - contoh_ext\js\content\webSocketMonitor.js
+            - contoh_ext\js\guide\action-guide.js
+            - contoh_ext\js\integrity.json
+            - contoh_ext\js\main.js
+            - contoh_ext\manifest.json
+            - contoh_ext\sample\ig_simulator.html
+            - contoh_ext\sample\index.html
+            - contoh_ext\sample_scenarios\General\Geser_Pagination_Tabel.json
+            - contoh_ext\sample_scenarios\General\Isi_Google_Form.json
+            - contoh_ext\sample_scenarios\General\Migrasi_Tabel_ke_Form.json
+            - contoh_ext\sample_scenarios\General\Otomatis_Input_Data_ke_Tabel_Web__DemoQA_.json
+            - contoh_ext\sample_scenarios\General\Registrasi Multi User dengan Validasi.json
+            - contoh_ext\sample_scenarios\General\Scrape Semua Data BPJS Kesehatan.json
+            - contoh_ext\sample_scenarios\General\ambil_data_dari_tabel.json
+            - contoh_ext\sample_scenarios\General\execute_js_variabel.json
+            - contoh_ext\sample_scenarios\General\hover_click_by_text_Delay.json
+            - contoh_ext\sample_scenarios\General\isi_form.json
+            - contoh_ext\sample_scenarios\General\isi_form_dengan_loop_dataset.json
+            - contoh_ext\sample_scenarios\General\isi_form_tunggal.json
+            - contoh_ext\sample_scenarios\General\kombinasi_if_else_loop_while.json
+            - contoh_ext\sample_scenarios\General\simpan_dengan_keypress_enter.json
+            - contoh_ext\sample_scenarios\General\validasi_form_data_error.json
+            - contoh_ext\sample_scenarios\Instagram\Scrolling_List_Follower_Instagram.json
+            - contoh_ext\sample_scenarios\Instagram\fill_form_with_loop.json
+            - contoh_ext\sample_scenarios\Instagram\unfollow.json
+            - contoh_ext\sample_scenarios\Tiktok\tiktok_comment_view.json
+            - contoh_ext\sample_scenarios\Tokopedia\Scrape_Tokopedia_Products.json
+            - contoh_ext\sample_scenarios\WhatsApp\Deteksi_Pesan_Baru_WA.json
+            - contoh_ext\sample_scenarios\Youtube\Alert_Youtube_Comment.json
+            - contoh_ext\sample_scenarios\Youtube\Alert_Youtube_Playlist.json
+            - contoh_ext\sample_scenarios\Youtube\Reply_Comment_Youtube.json
+            - contoh_ext\sample_scenarios\index.json
+            - contoh_ext\sidepanel.css
+            - contoh_ext\sidepanel.html
+            - js\background.js
+            - js\content.js
+            - js\sidepanel.js
+        source_files: []
+        children: []
+        depends_on: []
+        related_to: []
+    contoh_ext:
+        dir_name: Ghost Hands Web Automation Extension
+        title: Ghost Hands Web Automation Extension
+        scope:
+            - contoh_ext/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: magerin
+    magerin:
+        dir_name: Browser Automation & RPA Engine
+        title: Browser Automation & RPA Engine
+        scope:
+            - js/
+            - manifest.json
+            - sidepanel.html
+            - sidepanel.css
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: contoh_ext

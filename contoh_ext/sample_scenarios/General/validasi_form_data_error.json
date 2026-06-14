@@ -1,0 +1,14 @@
+{
+  "name": "Validasi Form - Data Error",
+  "steps": [
+    { "action": "navigate", "param": "https://didenkuswendi.github.io/ghosthands-index/form.html", "extra": "" },
+    { "action": "waitForPageLoad", "param": "", "extra": "" },
+    { "action": "type", "param": "#nama", "extra": "" },
+    { "action": "type", "param": "#email", "extra": "email_salah" },
+    { "action": "type", "param": "#usia", "extra": "150" },
+    { "action": "click", "param": "#simpanBtn", "extra": "" },
+    { "action": "delay", "param": 1000, "extra": "" },
+    { "action": "show_alert", "param": "Cek apakah ada toast error", "extra": "warning|3000|center" }
+  ],
+  "dataset": ""
+}

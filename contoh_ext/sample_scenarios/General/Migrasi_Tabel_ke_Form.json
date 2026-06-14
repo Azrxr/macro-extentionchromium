@@ -1,0 +1,76 @@
+{
+  "name": "Migrasi Tabel ke Form (Fix Loop Length)",
+  "steps": [
+    {
+      "action": "navigate",
+      "param": "https://demo.plainadmin.com/tables",
+      "extra": ""
+    },
+    {
+      "action": "delay",
+      "param": "2000",
+      "extra": ""
+    },
+    {
+      "action": "getVariable",
+      "param": ".lead-text p|text",
+      "extra": "arrNama"
+    },
+    {
+      "action": "getVariable",
+      "param": "tbody tr td:nth-child(2) p a|text",
+      "extra": "arrEmail"
+    },
+    {
+      "action": "show_fullscreen_overlay",
+      "param": "{{arrNama.length}} data berhasil diambil! Siap melakukan pemindahan data!",
+      "extra": "success|2500"
+    },
+    {
+      "action": "delay",
+      "param": 3000,
+      "extra": ""
+    },
+    {
+      "action": "loop_start",
+      "param": "{{arrNama.length}}",
+      "extra": ""
+    },
+    {
+      "action": "navigate",
+      "param": "https://didenkuswendi.github.io/ghosthands-index/form",
+      "extra": ""
+    },
+    {
+      "action": "delay",
+      "param": "1000",
+      "extra": ""
+    },
+    {
+      "action": "type",
+      "param": "#nama",
+      "extra": "{{arrNama[loopIndex0]}}"
+    },
+    {
+      "action": "type",
+      "param": "#email",
+      "extra": "{{arrEmail[loopIndex0]}}"
+    },
+    {
+      "action": "show_alert",
+      "param": "Data ke {{loopIndex}} berhasil disimpan!",
+      "extra": "success|2500|center"
+    },
+    {
+      "action": "delay",
+      "param": "1000",
+      "extra": ""
+    },
+    {
+      "action": "loop_end",
+      "param": "",
+      "extra": ""
+    }
+  ],
+  "dataset": ""
+}

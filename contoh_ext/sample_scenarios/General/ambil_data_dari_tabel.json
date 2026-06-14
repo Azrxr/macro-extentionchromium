@@ -1,0 +1,36 @@
+{
+  "name": "Ambil Data dari Tabel",
+  "steps": [
+    {
+      "action": "navigate",
+      "param": "https://didenkuswendi.github.io/ghosthands-index/form.html",
+      "extra": ""
+    },
+    {
+      "action": "waitForPageLoad",
+      "param": "",
+      "extra": ""
+    },
+    {
+      "action": "getVariable",
+      "param": "#tableBody > tr > td:nth-child(2)",
+      "extra": "namaTabel"
+    },
+    {
+      "action": "getVariable",
+      "param": "#tableBody > tr > td:nth-child(3)",
+      "extra": "emailTabel"
+    },
+    {
+      "action": "show_alert",
+      "param": "Nama: {{namaTabel[0]}}, Email: {{emailTabel[0]}}",
+      "extra": "info|5000|center"
+    },
+    {
+      "action": "execute_js",
+      "param": "console.log('Nama dari tabel:', GhostState.stepVariables.namaTabel[0]); return '';",
+      "extra": ""
+    }
+  ],
+  "dataset": ""
+}

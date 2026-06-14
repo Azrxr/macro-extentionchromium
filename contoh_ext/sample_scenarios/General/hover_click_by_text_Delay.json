@@ -1,0 +1,12 @@
+{
+  "name": "Hover + Click by Text + Delay",
+  "steps": [
+    { "action": "navigate", "param": "https://didenkuswendi.github.io/ghosthands-index/form.html", "extra": "" },
+    { "action": "hover", "param": "#simpanBtn", "extra": "" },
+    { "action": "delay", "param": 1000, "extra": "" },
+    { "action": "click_by_text", "param": "Reset Form", "extra": "" },
+    { "action": "delay", "param": 500, "extra": "" },
+    { "action": "show_alert", "param": "Tombol Reset sudah diklik via teks!", "extra": "warning|3000|center" }
+  ],
+  "dataset": ""
+}

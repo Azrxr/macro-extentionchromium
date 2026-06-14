@@ -1,0 +1,36 @@
+{
+  "name": "Alert Youtube Playlist",
+  "steps": [
+    {
+      "action": "getVariable",
+      "param": "span[id=\"video-title\"]",
+      "extra": "video"
+    },
+    {
+      "action": "loop_start",
+      "param": "{{video.length}}",
+      "extra": ""
+    },
+    {
+      "action": "show_alert",
+      "param": "{{video[{{loopIndex}}]}}",
+      "extra": "success|2500|center"
+    },
+    {
+      "action": "delay",
+      "param": 500,
+      "extra": ""
+    },
+    {
+      "action": "scroll",
+      "param": "div.playlist-items|down|50",
+      "extra": ""
+    },
+    {
+      "action": "loop_end",
+      "param": "",
+      "extra": ""
+    }
+  ],
+  "dataset": ""
+}

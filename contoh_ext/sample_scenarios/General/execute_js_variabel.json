@@ -1,0 +1,11 @@
+{
+  "name": "Execute JS + Variabel",
+  "steps": [
+    { "action": "navigate", "param": "https://didenkuswendi.github.io/ghosthands-index/form.html", "extra": "" },
+    { "action": "waitForPageLoad", "param": "", "extra": "" },
+    { "action": "execute_js", "param": "return document.querySelectorAll('#tableBody tr').length;", "extra": "jumlahData" },
+    { "action": "show_alert", "param": "Jumlah data di tabel: {{jumlahData}}", "extra": "info|4000|center" },
+    { "action": "execute_js", "param": "document.querySelector('#nama').value = 'Diisi via JS';", "extra": "" }
+  ],
+  "dataset": ""
+}

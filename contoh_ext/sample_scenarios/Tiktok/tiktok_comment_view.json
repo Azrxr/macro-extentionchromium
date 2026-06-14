@@ -1,0 +1,30 @@
+{
+  "name": "Tiktok Comment View",
+  "steps": [
+    {
+      "action": "getVariable",
+      "param": "div[data-e2e=\"comment-username-1\"]",
+      "extra": "daftarNama"
+    },
+    {
+      "action": "loop_start",
+      "param": "{{daftarNama.length}}",
+      "extra": ""
+    },
+    {
+      "action": "show_alert",
+      "param": "{{daftarNama[{{loopIndex}}]}}",
+      "extra": "info|2000|center"
+    },
+    {
+      "action": "delay",
+      "param": "1000",
+      "extra": ""
+    },
+    {
+      "action": "loop_end",
+      "param": "",
+      "extra": ""
+    }
+  ]
+}

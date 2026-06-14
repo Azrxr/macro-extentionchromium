@@ -1,0 +1,21 @@
+{
+  "name": "Kombinasi If Else + Loop While",
+  "steps": [
+    { "action": "navigate", "param": "https://didenkuswendi.github.io/ghosthands-index/form.html", "extra": "" },
+    { "action": "waitForPageLoad", "param": "", "extra": "" },
+    { "action": "type", "param": "#nama", "extra": "Rina Sari" },
+    { "action": "type", "param": "#email", "extra": "rina@mail.com" },
+    { "action": "type", "param": "#usia", "extra": "26" },
+    { "action": "click_by_text", "param": "Perempuan", "extra": "" },
+    { "action": "click_by_text", "param": "Musik", "extra": "" },
+    { "action": "selectDropdown", "param": "#kota|Yogyakarta", "extra": "" },
+    { "action": "click", "param": "#simpanBtn", "extra": "" },
+    { "action": "delay", "param": 500, "extra": "" },
+    { "action": "if_start", "param": "exists #toastMsg", "extra": "" },
+    { "action": "show_alert", "param": "✅ Data berhasil disimpan!", "extra": "success|3000|center" },
+    { "action": "else", "param": "", "extra": "" },
+    { "action": "show_alert", "param": "❌ Data gagal disimpan. Periksa form!", "extra": "error|3000|center" },
+    { "action": "if_end", "param": "", "extra": "" }
+  ],
+  "dataset": ""
+}

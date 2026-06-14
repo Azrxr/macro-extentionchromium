@@ -1,0 +1,162 @@
+{
+  "name": "Root",
+  "type": "directory",
+  "children": [
+    {
+      "name": "General",
+      "type": "directory",
+      "children": [
+        {
+          "name": "ambil_data_dari_tabel.json",
+          "type": "file",
+          "fullPath": "General/ambil_data_dari_tabel.json"
+        },
+        {
+          "name": "execute_js_variabel.json",
+          "type": "file",
+          "fullPath": "General/execute_js_variabel.json"
+        },
+        {
+          "name": "Geser_Pagination_Tabel.json",
+          "type": "file",
+          "fullPath": "General/Geser_Pagination_Tabel.json"
+        },
+        {
+          "name": "hover_click_by_text_Delay.json",
+          "type": "file",
+          "fullPath": "General/hover_click_by_text_Delay.json"
+        },
+        {
+          "name": "isi_form_dengan_loop_dataset.json",
+          "type": "file",
+          "fullPath": "General/isi_form_dengan_loop_dataset.json"
+        },
+        {
+          "name": "isi_form_tunggal.json",
+          "type": "file",
+          "fullPath": "General/isi_form_tunggal.json"
+        },
+        {
+          "name": "isi_form.json",
+          "type": "file",
+          "fullPath": "General/isi_form.json"
+        },
+        {
+          "name": "Isi_Google_Form.json",
+          "type": "file",
+          "fullPath": "General/Isi_Google_Form.json"
+        },
+        {
+          "name": "kombinasi_if_else_loop_while.json",
+          "type": "file",
+          "fullPath": "General/kombinasi_if_else_loop_while.json"
+        },
+        {
+          "name": "Migrasi_Tabel_ke_Form.json",
+          "type": "file",
+          "fullPath": "General/Migrasi_Tabel_ke_Form.json"
+        },
+        {
+          "name": "Otomatis_Input_Data_ke_Tabel_Web__DemoQA_.json",
+          "type": "file",
+          "fullPath": "General/Otomatis_Input_Data_ke_Tabel_Web__DemoQA_.json"
+        },
+        {
+          "name": "Registrasi Multi User dengan Validasi.json",
+          "type": "file",
+          "fullPath": "General/Registrasi Multi User dengan Validasi.json"
+        },
+        {
+          "name": "Scrape Semua Data BPJS Kesehatan.json",
+          "type": "file",
+          "fullPath": "General/Scrape Semua Data BPJS Kesehatan.json"
+        },
+        {
+          "name": "simpan_dengan_keypress_enter.json",
+          "type": "file",
+          "fullPath": "General/simpan_dengan_keypress_enter.json"
+        },
+        {
+          "name": "validasi_form_data_error.json",
+          "type": "file",
+          "fullPath": "General/validasi_form_data_error.json"
+        }
+      ]
+    },
+    {
+      "name": "Instagram",
+      "type": "directory",
+      "children": [
+        {
+          "name": "fill_form_with_loop.json",
+          "type": "file",
+          "fullPath": "Instagram/fill_form_with_loop.json"
+        },
+        {
+          "name": "Scrolling_List_Follower_Instagram.json",
+          "type": "file",
+          "fullPath": "Instagram/Scrolling_List_Follower_Instagram.json"
+        },
+        {
+          "name": "unfollow.json",
+          "type": "file",
+          "fullPath": "Instagram/unfollow.json"
+        }
+      ]
+    },
+    {
+      "name": "Tiktok",
+      "type": "directory",
+      "children": [
+        {
+          "name": "tiktok_comment_view.json",
+          "type": "file",
+          "fullPath": "Tiktok/tiktok_comment_view.json"
+        }
+      ]
+    },
+    {
+      "name": "Tokopedia",
+      "type": "directory",
+      "children": [
+        {
+          "name": "Scrape_Tokopedia_Products.json",
+          "type": "file",
+          "fullPath": "Tokopedia/Scrape_Tokopedia_Products.json"
+        }
+      ]
+    },
+    {
+      "name": "WhatsApp",
+      "type": "directory",
+      "children": [
+        {
+          "name": "Deteksi_Pesan_Baru_WA.json",
+          "type": "file",
+          "fullPath": "WhatsApp/Deteksi_Pesan_Baru_WA.json"
+        }
+      ]
+    },
+    {
+      "name": "Youtube",
+      "type": "directory",
+      "children": [
+        {
+          "name": "Alert_Youtube_Comment.json",
+          "type": "file",
+          "fullPath": "Youtube/Alert_Youtube_Comment.json"
+        },
+        {
+          "name": "Alert_Youtube_Playlist.json",
+          "type": "file",
+          "fullPath": "Youtube/Alert_Youtube_Playlist.json"
+        },
+        {
+          "name": "Reply_Comment_Youtube.json",
+          "type": "file",
+          "fullPath": "Youtube/Reply_Comment_Youtube.json"
+        }
+      ]
+    }
+  ]
+}

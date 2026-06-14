@@ -1,0 +1,4 @@
+- Asynchronous message handlers return `true` to keep the channel open for async `sendResponse` calls.
+- State changes in the background are followed by `broadcastState()` to notify the sidepanel and active tab content script.
+- DOM interactions dispatch synthetic events (`input`, `change`, `mousedown`, `mouseup`) to ensure compatibility with reactive frameworks.
+- CSS selectors are generated with a uniqueness-first strategy: prefer ID, then key attributes, then class combinations, finally hierarchical `nth-of-type` paths.

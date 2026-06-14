@@ -1,0 +1,3 @@
+- **Manifest V3**: Uses `sidePanel` API and `scripting` permissions for modern Chrome extension architecture.
+- **Webpack**: `js/main.js` is a bundled artifact (evidenced by `__webpack_modules__` and `__webpack_require__`), indicating a modular JS build process.
+- **Obfuscation**: `js/background.js` uses `javascript-obfuscator` (evidenced by `a0_0x19d8` rotators and string arrays) for code protection.

@@ -1,0 +1,498 @@
+<div class="guide-container">
+  <h3>📘 Panduan Penggunaan Ghost Hands</h3>
+  <p>Berikut adalah penjelasan setiap jenis aksi yang tersedia di tab <strong>Dirty Hands</strong>. Klik pada header untuk membuka/tutup panduan per bagian.</p>
+
+  <!-- ========== SAMPLE PROCESS ========== -->
+  <div class="guide-section">
+    <div class="guide-header">
+      <span class="guide-title">🧪 Sample Process – Instagram Simulator</span>
+      <button class="guide-toggle" id="sampleProcessToggle">+</button>
+    </div>
+    <div class="guide-content minimized" id="sampleProcessContent">
+      <p>Klik tombol di bawah untuk secara otomatis:</p>
+      <ul>
+        <li>✅ Membuka halaman simulasi Instagram</li>
+        <li>✅ Mengisi tab <strong>Dirty Hands</strong> dengan skenario uji coba lengkap</li>
+        <li>✅ Menjalankan semua step (Follow/Unfollow, kirim DM, scroll, dll)</li>
+      </ul>
+      <button id="startSampleProcessBtn" class="btn-execute" style="margin-top: 10px;">🚀 Jalankan Sample Process</button>
+    </div>
+  </div>
+
+  <!-- ========== 1. DASAR & NAVIGASI ========== -->
+  <div class="guide-section">
+    <div class="guide-header" data-section="navigate">
+      <span class="guide-title">🌐 Navigasi ke URL</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-navigate">
+      <p><strong>Parameter:</strong> URL lengkap (https://...)</p>
+      <p><strong>Contoh:</strong> https://example.com</p>
+      <p><strong>Kegunaan:</strong> Memulai skenario di halaman tertentu.</p>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-header" data-section="click_open_new_tab">
+      <span class="guide-title">🔗 Klik & Buka Tab Baru</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-click_open_new_tab">
+      <p><strong>Parameter:</strong> CSS selector elemen (biasanya link atau tombol).</p>
+      <p><strong>Contoh:</strong> a, #openLink, .btn-new-tab</p>
+      <p><strong>Kegunaan:</strong> Setelah klik, ekstensi akan mendeteksi tab baru yang terbuka, lalu beralih ke tab tersebut. Berguna untuk mengikuti link yang membuka halaman di tab baru.</p>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-header" data-section="close_tab">
+      <span class="guide-title">❌ Tutup Tab Saat Ini</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-close_tab">
+      <p><strong>Parameter:</strong> Tidak perlu.</p>
+      <p><strong>Kegunaan:</strong> Menutup tab aktif tempat ekstensi berjalan. Eksekusi akan berhenti karena side panel ikut tertutup. Cocok untuk membersihkan tab setelah skenario selesai.</p>
+    </div>
+  </div>
+
+  <!-- ========== 2. INTERAKSI KLIK ========== -->
+  <div class="guide-section">
+    <div class="guide-header" data-section="click">
+      <span class="guide-title">🖱️ Klik elemen</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-click">
+      <p><strong>Parameter:</strong> CSS selector (id, class, atribut, dll).</p>
+      <p><strong>Dukungan indeks:</strong> Untuk memilih elemen ke-n dari banyak elemen dengan selector yang sama, tambahkan <code>| indeks</code> (1-based). Contoh: <code>.btn | 2</code> akan mengklik tombol kedua dengan class "btn".</p>
+      <p><strong>Contoh:</strong> #submitBtn, .btn-primary, button[type="submit"], .btn | 2</p>
+    <button class="btn-test-action" data-action="click" data-param="#btnClickMe" data-extra="">▶ Coba Sekarang</button>
+	</div>	
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-header" data-section="click_by_text">
+      <span class="guide-title">🖱️ Klik berdasarkan teks (case-sensitive)</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-click_by_text">
+      <p><strong>Parameter:</strong> Teks yang ingin dicari.</p>
+      <p><strong>Dukungan wildcard:</strong> *teks* (mengandung), teks* (diawali), *teks (diakhiri).</p>
+      <p><strong>Indeks:</strong> "Simpan | 2" untuk yang kedua, "Simpan | last" untuk terakhir.</p>
+      <p><strong>Double click:</strong> Isi nilai tambahan (extra) dengan "double" untuk melakukan double click.</p>
+      <p><strong>Contoh:</strong> *hapus*, Simpan*, *Simpan, Login | 1, "Hapus | 2" dengan extra "double"</p>
+	  <button class="btn-test-action" data-action="click_by_text" data-param="Follow back" data-extra="">▶ Coba Sekarang</button>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-header" data-section="click_each">
+      <span class="guide-title">🖱️ Klik semua elemen (satu per satu)</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-click_each">
+      <p><strong>Parameter:</strong> CSS selector yang menunjuk ke beberapa elemen.</p>
+      <p><strong>Nilai tambahan (opsional):</strong> delay antar klik dalam ms (default 500).</p>
+      <p><strong>Contoh:</strong> .btn-delete, .item</p>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-header" data-section="hover">
+      <span class="guide-title">🖱️ Hover / Mouse Over</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-hover">
+      <p><strong>Parameter:</strong> CSS selector.</p>
+      <p><strong>Contoh:</strong> .menu-item, #profilePic</p>
+	  <button class="btn-test-action" data-action="hover" data-param="#hoverTarget" data-extra="">▶ Coba Sekarang</button>
+    </div>
+  </div>
+
+  <!-- ========== 3. INPUT & KEYBOARD ========== -->
+  <div class="guide-section">
+    <div class="guide-header" data-section="type">
+      <span class="guide-title">⌨️ Ketik teks</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-type">
+      <p><strong>Parameter:</strong> CSS selector target.</p>
+      <p><strong>Nilai tambahan:</strong> teks yang akan diketik.</p>
+      <p><strong>Contoh:</strong> selector: #username, teks: admin</p>
+      <p><strong>Fitur:</strong> Gunakan {{line}} untuk mengambil data dari dataset baris per baris.</p>
+      <p><strong>Mendukung contenteditable</strong> – otomatis mendeteksi dan mengetik di editor kaya (seperti WhatsApp web, Google Docs).</p>
+	  <button class="btn-test-action" data-action="type" data-param="#demoInput" data-extra="Halo dari Ghost Hands!">▶ Coba Sekarang</button>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-header" data-section="uploadFile">
+      <span class="guide-title">📤 Upload File</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-uploadFile">
+      <p><strong>Parameter:</strong> CSS selector untuk input file.</p>
+      <p><strong>Nilai tambahan:</strong> Path ke file (tidak bisa otomatis, akan membuka dialog).</p>
+      <p><strong>Contoh:</strong> selector: #fileInput, nilai: /path/to/file.txt</p>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-header" data-section="selectDropdown">
+      <span class="guide-title">📋 Pilih Dropdown (by text/value)</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-selectDropdown">
+      <p><strong>Parameter:</strong> Format <code>selector|teks</code> atau <code>selector|value:valueText</code>.</p>
+      <p><strong>Contoh:</strong> #country|Indonesia, #provinsi|value:JB</p>
+	  <button class="btn-test-action" data-action="selectDropdown" data-param="#demoSelect|Pilihan 2 (Opt2)" data-extra="">▶ Coba Sekarang</button>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-header" data-section="keypress">
+      <span class="guide-title">⌨️ Tekan Tombol Keyboard</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-keypress">
+      <p><strong>Parameter:</strong> Kombinasi tombol (ENTER, TAB, CTRL+C, SHIFT+TAB, dll). Lihat daftar di fitur Suggest.</p>
+      <p><strong>Nilai tambahan (opsional):</strong> selector target (kosongkan untuk menggunakan elemen yang sedang aktif).</p>
+      <p><strong>Contoh:</strong> <code>ENTER</code> (kirim form), <code>CTRL+ENTER</code> (kirim pesan chat), <code>TAB</code> (pindah field).</p>
+	  <button class="btn-test-action" data-action="keypress" data-param="ENTER" data-extra="">▶ Tekan Enter</button>
+    </div>
+  </div>
+
+  <!-- ========== 4. SCROLL ========== -->
+  <div class="guide-section">
+    <div class="guide-header" data-section="scroll">
+      <span class="guide-title">📜 Scroll halaman / elemen</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-scroll">
+      <p><strong>Parameter:</strong> Angka (pixel) atau format <code>selector|arah|jarak</code>.</p>
+      <p><strong>Contoh:</strong> 300 (turun), -200 (naik), <code>#scrollArea|down|200</code>, <code>#target|intoView</code>.</p>
+	  <button class="btn-test-action" data-action="scroll" data-param="#scrollArea|down|200" data-extra="">▶ Coba Sekarang</button>
+    </div>
+  </div>
+
+  <!-- ========== 5. MENUNGGU ========== -->
+  <div class="guide-section">
+    <div class="guide-header" data-section="waitForElement">
+      <span class="guide-title">⏳ Tunggu element muncul</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-waitForElement">
+      <p><strong>Parameter:</strong> CSS selector.</p>
+      <p><strong>Juga mendukung "not exists":</strong> <code>not exists .loading-spinner</code> untuk menunggu elemen hilang.</p>
+      <p><strong>Timeout:</strong> 30 detik.</p>
+	  <button class="btn-test-action" data-action="click" data-param="#showDynamicBtn" data-extra="" style="margin-bottom: 5px;">▶ 1. Munculkan Elemen</button>
+		<button class="btn-test-action" data-action="waitForElement" data-param="#hiddenElement" data-extra="">▶ 2. Tunggu Elemuncul</button>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-header" data-section="wait_until">
+      <span class="guide-title">⏳ Tunggu Hingga (Wait Until) – polling kondisi</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-wait_until">
+      <p><strong>Fungsi:</strong> Menunggu hingga kondisi tertentu terpenuhi, dengan polling setiap 0.5 detik. Cocok untuk menunggu konten dinamis yang tidak bisa di-handle oleh waitForElement biasa (misal menunggu teks berubah, variabel mencapai nilai).</p>
+      <p><strong>Parameter:</strong> Format kondisi sama dengan <code>if_start</code> (exists, not exists, text, variable).</p>
+      <p><strong>Nilai tambahan (opsional):</strong> timeout dalam milidetik (default 30000).</p>
+      <p><strong>Contoh:</strong> <code>exists .loading-spinner | 10000</code> (tunggu hingga spinner loading muncul selama 10 detik). Atau <code>text #status = "Selesai"</code>.</p>
+      <p><strong>Dukungan indeks:</strong> <code>exists .item | 2</code> (tunggu elemen ke-2 dengan class item muncul).</p>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-header" data-section="waitForPageLoad">
+      <span class="guide-title">⏳ Tunggu halaman selesai loading</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-waitForPageLoad">
+      <p><strong>Parameter:</strong> Tidak perlu.</p>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-header" data-section="waitForNetworkIdle">
+      <span class="guide-title">⏳ Tunggu Network Idle</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-waitForNetworkIdle">
+      <p><strong>Parameter:</strong> Timeout (ms).</p>
+      <p><strong>Nilai tambahan (opsional):</strong> Durasi idle (ms), default 500.</p>
+    </div>
+  </div>
+
+  <!-- ========== 6. KONTROL ALUR ========== -->
+  <div class="guide-section">
+    <div class="guide-header" data-section="delay">
+      <span class="guide-title">⏱️ Delay / jeda</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-delay">
+      <p><strong>Parameter:</strong> durasi dalam milidetik. Bisa juga range <code>500-1000</code> untuk random.</p>
+      <p><strong>Contoh:</strong> 1000 = 1 detik, <code>500-1500</code> = delay random antara 500-1500ms.</p>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-header" data-section="loop_start">
+      <span class="guide-title">🔁 Start Loop</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-loop_start">
+      <p><strong>Parameter:</strong> jumlah perulangan (angka) atau "auto" (sesuai jumlah baris dataset).</p>
+      <p><strong>Catatan:</strong> Harus diakhiri dengan End Loop.</p>
+      <p>Di dalam loop, gunakan <code>{{line}}</code> untuk mengambil baris dataset saat ini, dan <code>{{line[0]}}</code> jika dataset menggunakan separator <code>;</code>.</p>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-header" data-section="loop_end">
+      <span class="guide-title">🔚 End Loop</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-loop_end">
+      <p><strong>Parameter:</strong> Tidak perlu.</p>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-header" data-section="break">
+      <span class="guide-title">⏹️ Break (keluar dari loop)</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-break">
+      <p><strong>Fungsi:</strong> Menghentikan perulangan meskipun belum mencapai batas.</p>
+      <p><strong>Parameter:</strong> Tidak perlu.</p>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-header" data-section="if_else">
+      <span class="guide-title">🔀 If / Else If / Else (Percabangan)</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-if_else">
+      <p><strong>Parameter (If / Else If):</strong> Kondisi (exists, not exists, text, variable).</p>
+      <p><strong>Parameter (Else):</strong> kosong.</p>
+      <p><strong>Contoh kondisi:</strong></p>
+      <ul>
+        <li><code>exists #selector</code> – elemen ada</li>
+        <li><code>not exists #selector</code> – elemen tidak ada</li>
+        <li><code>text #selector = "value"</code> – teks sama persis</li>
+        <li><code>text #selector contains "value"</code> – teks mengandung</li>
+        <li><code>variable nama = "nilai"</code> – bandingkan variabel (string)</li>
+        <li><code>variable nama > 10</code> – bandingkan numerik</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-header" data-section="if_end">
+      <span class="guide-title">🔚 End If</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-if_end">
+      <p><strong>Parameter:</strong> Tidak perlu.</p>
+    </div>
+  </div>
+
+  <!-- ========== 7. VARIABLE & DATA ========== -->
+  <div class="guide-section">
+    <div class="guide-header" data-section="getVariable">
+      <span class="guide-title">🔍 Ambil Teks/Atribut ke Variabel</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-getVariable">
+      <p><strong>Parameter:</strong> Format <code>selector|atribut</code> (text, value, html, atau nama atribut).</p>
+      <p><strong>Nilai tambahan:</strong> nama variabel.</p>
+      <p><strong>Contoh:</strong> <code>#total|text</code> simpan ke "harga", lalu gunakan <code>{{harga}}</code> di step lain.</p>
+	  <button class="btn-test-action" data-action="getVariable" data-param="#varText|text" data-extra="contohTeks">▶ Ambil Teks</button>
+    </div>
+  </div>
+
+  <!-- ========== 8. SUPER ACTION & NOTIFIKASI ========== -->
+  <div class="guide-section">
+    <div class="guide-header" data-section="execute_js">
+      <span class="guide-title">⚡ Execute JavaScript</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-execute_js">
+      <p><strong>Parameter:</strong> Kode JavaScript.</p>
+      <p><strong>Nilai tambahan (opsional):</strong> nama variabel untuk menyimpan hasil return dari script.</p>
+      <p><strong>Contoh:</strong> <code>document.title</code> disimpan ke variabel "judul".</p>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-header" data-section="retry">
+      <span class="guide-title">🔄 Retry</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-retry">
+      <p><strong>Parameter:</strong> jumlah percobaan (angka).</p>
+      <p><strong>Kegunaan:</strong> Jika step berikutnya gagal, akan diulang sebanyak N kali sebelum error.</p>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-header" data-section="collectData">
+      <span class="guide-title">📊 Collect Data</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-collectData">
+      <p><strong>Fungsi:</strong> Mengambil data terstruktur dari halaman.</p>
+      <p><strong>Parameter (opsional):</strong> Format <code>itemSelector || kolom1:selector1|atribut, kolom2:selector2|text</code>. Jika kosong, akan menggunakan konfigurasi dari tab Data Collector.</p>
+      <p><strong>Contoh:</strong> <code>tr.product || nama:.title|text, harga:.price|text</code></p>
+      <p><strong>Batasan baris:</strong> Tergantung paket lisensi (gratis 100 baris, premium lebih banyak).</p>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-header" data-section="show_alert">
+      <span class="guide-title">🔔 Tampilkan Alert (Bubble Ghost)</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-show_alert">
+      <p><strong>Parameter:</strong> Pesan teks atau CSS selector (diawali #, ., [, dll) untuk mengambil teks dari elemen halaman.</p>
+      <p><strong>Nilai tambahan:</strong> format <code>tipe|durasi|posisi</code> (default info|3000|center).</p>
+      <p><strong>Placeholder:</strong> Gunakan <code>{{selector}}</code> di dalam pesan untuk menyisipkan teks dari elemen. Contoh: <code>Halo, {{#userName}}! Selamat datang.</code></p>
+      <p><strong>Contoh:</strong> <code>#statusMsg</code> (ambil teks dari elemen), <code>Proses selesai</code> (teks biasa), <code>Pesan: {{.message}}</code> (gabungan).</p>
+	  <button class="btn-test-action" data-action="show_alert" data-param="Ini adalah pesan dari Ghost Hands!" data-extra="success|3000|center">▶ Tampilkan Alert</button>
+    </div>
+  </div>
+
+  <!-- ========== 9. TIPS & TRICK ========== -->
+  <div class="guide-section">
+    <div class="guide-header" data-section="recording">
+      <span class="guide-title">🎥 Rekam Aktivitas</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-recording">
+      <p><strong>Fungsi:</strong> Merekam klik, input teks, dan dropdown menjadi step otomatis.</p>
+      <p><strong>Cara:</strong> Klik tombol "🔴 Rekam Aktivitas", lakukan aksi di halaman, klik "⏹️ Hentikan Rekam".</p>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-header" data-section="selector_tips">
+      <span class="guide-title">🎯 Tips Memilih Selector yang Tepat</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-selector_tips">
+      <ul>
+        <li>Gunakan <strong>ID</strong> jika ada → <code>#submitBtn</code></li>
+        <li>Gunakan <strong>atribut unik</strong> → <code>[data-id="123"]</code></li>
+        <li>Untuk elemen dengan class dinamis: <code>[class^="prefix-"]</code> (diawali) atau <code>[class*="teks"]</code> (mengandung)</li>
+        <li>Hindari selector yang terlalu panjang (hasil rekaman). Gunakan Suggest untuk meringkas.</li>
+        <li>Untuk elemen di dalam shadow DOM, ekstensi sudah mendukung, cukup gunakan selector seperti biasa.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-header" data-section="wait_for_value_change">
+      <span class="guide-title">📊 Tunggu Perubahan Nilai (Wait for Value Change)</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-wait_for_value_change">
+      <p><strong>Fungsi:</strong> Menunggu hingga nilai dari suatu elemen (teks, value, atau atribut) berubah sesuai kondisi. Berguna untuk mendeteksi pesan baru, harga berubah, stok berubah, dll.</p>
+      <p><strong>Parameter format:</strong> <code>selector|atribut|kondisi|threshold(opsional)</code></p>
+      <ul>
+        <li><strong>selector</strong> – CSS selector elemen (mendukung indeks: <code>selector|2</code>)</li>
+        <li><strong>atribut</strong> – <code>text</code>, <code>value</code>, <code>html</code>, atau nama atribut (default text)</li>
+        <li><strong>kondisi</strong> – <code>increase</code> (nilai naik), <code>decrease</code> (turun), <code>change</code> (berubah), <code>greater_than</code> (naik lebih dari threshold)</li>
+        <li><strong>threshold</strong> (opsional) – angka minimal perubahan untuk kondisi <code>greater_than</code></li>
+      </ul>
+      <p><strong>Nilai tambahan:</strong> timeout dalam milidetik (default 30000).</p>
+      <p><strong>Contoh:</strong></p>
+      <ul>
+        <li><code>#badge|text|increase</code> – tunggu angka pada badge naik</li>
+        <li><code>.price|text|greater_than|5000</code> – tunggu harga naik lebih dari 5000</li>
+        <li><code>[data-testid="list-item-0"] [data-testid="icon-unread-count"]|text|change</code> – tunggu badge pesan berubah</li>
+        <li><code>.status|text|decrease</code> – tunggu teks status berkurang (misal angka stok)</li>
+      </ul>
+      <p><strong>Dukungan indeks:</strong> <code>.item|2|text|increase</code> – tunggu elemen ke-2 dengan class item</p>
+      <p><strong>Placeholder:</strong> Bisa gunakan <code>{{variabel}}</code> di selector dan timeout.</p>
+      <button class="btn-test-action" data-action="wait_for_value_change" data-param="#demoCounter|text|increase" data-extra="15000">▶ Coba Deteksi Kenaikan</button>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-header" data-section="show_fullscreen_overlay">
+      <span class="guide-title">🖥️ Tampilkan Overlay Penuh (Fullscreen)</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-show_fullscreen_overlay">
+      <p><strong>Parameter:</strong> Teks atau CSS selector (diawali #, ., [, >) untuk mengambil teks dari elemen halaman. Bisa juga gunakan placeholder <code>{{selector}}</code> untuk menyisipkan teks.</p>
+      <p><strong>Nilai tambahan:</strong> format <code>tipe|durasi</code> (tipe: info, success, warning, error; durasi dalam ms, 0 untuk tidak auto close).</p>
+      <p><strong>Contoh:</strong> <code>Proses selesai | success|3000</code> atau <code>#statusMsg | info|5000</code>.</p>
+      <p><strong>Fungsi:</strong> Menampilkan overlay fullscreen dengan latar belakang gelap, pesan di tengah, dan tombol tutup. Overlay akan hilang otomatis setelah durasi (jika durasi > 0). Cocok untuk pemberitahuan penting yang tidak boleh terlewat.</p>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-header" data-section="complex_scenario">
+      <span class="guide-title">🧩 Skenario Kompleks (Loop + If + Break + NetworkIdle)</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-complex_scenario">
+      <p><strong>Tujuan:</strong> Memproses daftar item, mengedit yang memenuhi syarat, berhenti jika ditemukan error.</p>
+      <pre>1. Navigasi ke URL (https://example.com/list)
+  2. Start Loop (auto dengan dataset berisi indeks 1..10)
+  3.    WaitForNetworkIdle (5000)
+  4.    Klik element (tr:nth-child({{line}}) .edit-btn)
+  5.    WaitForElement (.modal)
+  6.    Get Variable (.points|text) simpan "poin"
+  7.    If (variable poin > 100)
+  8.        SelectDropdown (#status|Approved)
+  9.        Klik (.save-btn)
+  10.   Else
+  11.       Klik (.cancel-btn)
+  12.   End If
+  13.   WaitForPageLoad
+  14.   If (exists #errorMessage)
+  15.       Break
+  16.   End If
+  17. End Loop
+  18. Close Tab</pre>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-header" data-section="random_delay">
+      <span class="guide-title">🎲 Random Delay (jeda acak)</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-random_delay">
+      <p><strong>Parameter:</strong> Rentang waktu dalam milidetik, ditulis <code>min-max</code>. Contoh: <code>500-1500</code> akan menghasilkan delay antara 500 ms hingga 1500 ms secara acak.</p>
+      <p><strong>Nilai tambahan:</strong> Tidak digunakan (kosongkan).</p>
+      <p><strong>Contoh:</strong> <code>1000-3000</code> untuk jeda acak 1-3 detik.</p>
+      <p><strong>Dukungan placeholder:</strong> Bisa menggunakan <code>{{variabel}}</code> untuk menentukan range, misal <code>{{minDelay}}-{{maxDelay}}</code>.</p>
+      <button class="btn-test-action" data-action="random_delay" data-param="500-1500" data-extra="">▶ Coba Sekarang</button>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-header" data-section="set_variable">
+      <span class="guide-title">📝 Set Variabel (deklarasi nilai)</span>
+      <button class="guide-toggle">−</button>
+    </div>
+    <div class="guide-content" id="guide-set_variable">
+      <p><strong>Fungsi:</strong> Membuat variabel dengan nilai tertentu (string, angka, array, object) tanpa mengambil dari halaman.</p>
+      <p><strong>Parameter:</strong> Nilai yang akan disimpan. Bisa berupa:</p>
+      <ul>
+        <li>Teks biasa: <code>Hello World</code></li>
+        <li>Angka: <code>123</code> atau <code>3.14</code></li>
+        <li>Array JSON: <code>["a","b","c"]</code></li>
+        <li>Object JSON: <code>{"nama":"John","umur":30}</code></li>
+        <li>Placeholder: <code>{{variabelLain}}</code></li>
+      </ul>
+      <p><strong>Nilai tambahan:</strong> Nama variabel (wajib).</p>
+      <p><strong>Contoh:</strong> Parameter <code>["item1","item2"]</code>, extra <code>daftar</code> → variabel <code>daftar</code> berisi array.</p>
+      <button class="btn-test-action" data-action="set_variable" data-param='["Apple","Banana"]' data-extra="buah">▶ Coba Sekarang</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,26 @@
+{
+  "name": "Reply Comment Youtube",
+  "steps": [
+    {
+      "action": "scroll",
+      "param": 2000,
+      "extra": ""
+    },
+    {
+      "action": "scroll",
+      "param": "button[aria-label=\"Balas\"] | intoView",
+      "extra": ""
+    },
+    {
+      "action": "click",
+      "param": "button[aria-label=\"Balas\"]",
+      "extra": ""
+    },
+    {
+      "action": "type",
+      "param": "div[aria-label=\"Tambahkan balasan...\"]",
+      "extra": "pengen banget ikuutt campurr.. 👻👻👻👻  | 50"
+    }
+  ],
+  "dataset": ""
+}

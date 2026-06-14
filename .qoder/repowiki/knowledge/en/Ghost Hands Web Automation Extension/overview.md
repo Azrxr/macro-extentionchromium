@@ -1,0 +1,1 @@
+A Manifest V3 Chrome extension providing no-code web automation through a side-panel UI, supporting DOM interaction, data scraping, and complex control flow logic.

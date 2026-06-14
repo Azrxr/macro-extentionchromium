@@ -1,0 +1,56 @@
+{
+  "name": "Isi Google Form",
+  "steps": [
+    {
+      "action": "show_fullscreen_overlay",
+      "param": "Menuju Halaman Google Form 👻",
+      "extra": "info|3000"
+    },
+    {
+      "action": "delay",
+      "param": 4000,
+      "extra": ""
+    },
+    {
+      "action": "navigate",
+      "param": "https://docs.google.com/forms/d/e/1FAIpQLSfGCrj8NUBl-4nPIQL2qz3Ksg7QzFcsyCRLUfuYVgoixdheZQ/viewform",
+      "extra": ""
+    },
+    {
+      "action": "waitForElement",
+      "param": "input[type=\"text\"]",
+      "extra": ""
+    },
+    {
+      "action": "click_by_text",
+      "param": "Pembelian | 4",
+      "extra": ""
+    },
+    {
+      "action": "type",
+      "param": "input[type=\"text\"] | 1",
+      "extra": "Diden Kuswendi |50"
+    },
+    {
+      "action": "type",
+      "param": "input[type=\"text\"] | 2",
+      "extra": "Tidak Tahu | 50"
+    },
+    {
+      "action": "type",
+      "param": "input[type=\"text\"] | 3",
+      "extra": "Tidak Tahu | 50"
+    },
+    {
+      "action": "type",
+      "param": "input[type=\"text\"] | 4",
+      "extra": "didenkuswendi@gmail.com | 50"
+    },
+    {
+      "action": "click",
+      "param": "div[aria-label=\"Kirim\"]",
+      "extra": ""
+    }
+  ],
+  "dataset": ""
+}

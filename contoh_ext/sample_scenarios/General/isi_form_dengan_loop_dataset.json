@@ -1,0 +1,23 @@
+{
+  "name": "Isi Form dengan Loop + Dataset",
+  "steps": [
+    { "action": "navigate", "param": "https://didenkuswendi.github.io/ghosthands-index/form.html", "extra": "" },
+    { "action": "waitForPageLoad", "param": "", "extra": "" },
+    { "action": "delay", "param": 1000, "extra": "" },
+    { "action": "loop_start", "param": "auto", "extra": "" },
+    { "action": "type", "param": "#nama", "extra": "{{line[0]}}" },
+    { "action": "type", "param": "#email", "extra": "{{line[1]}}" },
+    { "action": "type", "param": "#usia", "extra": "{{line[2]}}" },
+    { "action": "click_by_text", "param": "{{line[3]}}", "extra": "" },
+    { "action": "click_by_text", "param": "{{line[4]}}", "extra": "" },
+    { "action": "selectDropdown", "param": "#kota|{{line[5]}}", "extra": "" },
+    { "action": "type", "param": "#komentar", "extra": "{{line[6]}}" },
+    { "action": "type", "param": "#tanggal", "extra": "{{line[7]}}" },
+    { "action": "click", "param": "#simpanBtn", "extra": "" },
+    { "action": "delay", "param": 500, "extra": "" },
+    { "action": "click", "param": "#resetBtn", "extra": "" },
+    { "action": "delay", "param": 300, "extra": "" },
+    { "action": "loop_end", "param": "", "extra": "" }
+  ],
+  "dataset": "Budi Santoso;budi@mail.com;25;Laki-laki;Olahraga;Jakarta;Bisa otomatis ya!;2026-06-01\nSiti Aminah;siti@mail.com;30;Perempuan;Membaca;Bandung;Coba loop kedua;2026-06-01\nJoko Widodo;joko@mail.com;40;Laki-laki;Musik;Surabaya;Keren banget!;2026-06-01\nDewi Sartika;dewi@mail.com;22;Perempuan;Traveling;Yogyakarta;Mantap;2026-06-01\nRizki Ramadhan;rizki@mail.com;29;Laki-laki;Olahraga;Medan;Loop ke-5;2026-06-01\nAnisa Putri;anisa@mail.com;26;Perempuan;Membaca;Makassar;Semakin paham;2026-06-01\nFajar Nugroho;fajar@mail.com;35;Laki-laki;Musik;Jakarta;Selalu sukses;2026-06-01\nCitra Kirana;citra@mail.com;27;Perempuan;Traveling;Bandung;Otomatisasi asyik;2026-06-01\nRian Maulana;rian@mail.com;31;Laki-laki;Olahraga;Surabaya;Yang ke-9 nih;2026-06-01\nNina Zaitun;nina@mail.com;24;Perempuan;Membaca;Yogyakarta;Terakhir, sukses!;2026-06-01"
+}
