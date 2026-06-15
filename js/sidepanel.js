@@ -546,6 +546,133 @@ document.addEventListener('DOMContentLoaded', () => {
     return 'exists ';
   }
 
+  // Helper to create parameter input with CSV mapping trigger and capsule UI
+  function createInputWithCsvSupport(initialValue, placeholder, isDisabled, isCsvMapped, csvColumnName, onValueChange, onCsvSelect, onCsvClear) {
+    const container = document.createElement('div');
+    container.className = 'param-input-with-csv-container';
+    if (isDisabled) container.classList.add('disabled');
+
+    // 1. Capsule element wrapper
+    const capsuleWrapper = document.createElement('div');
+    capsuleWrapper.className = 'csv-capsule-wrapper';
+    if (!isCsvMapped) capsuleWrapper.classList.add('hidden');
+
+    const capsule = document.createElement('span');
+    capsule.className = 'csv-capsule';
+    capsule.innerHTML = `
+      <svg class="csv-capsule-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="16" y1="13" x2="8" y2="13"/>
+        <line x1="16" y1="17" x2="8" y2="17"/>
+      </svg>
+      <span class="capsule-text"></span>
+    `;
+    capsule.querySelector('.capsule-text').textContent = csvColumnName || '';
+
+    const btnClearCapsule = document.createElement('button');
+    btnClearCapsule.className = 'btn-clear-capsule';
+    btnClearCapsule.title = 'Hapus pemetaan CSV';
+    btnClearCapsule.innerHTML = '✕';
+    btnClearCapsule.disabled = isDisabled;
+    btnClearCapsule.addEventListener('click', (e) => {
+      e.stopPropagation();
+      onCsvClear();
+    });
+    capsule.appendChild(btnClearCapsule);
+    capsuleWrapper.appendChild(capsule);
+    container.appendChild(capsuleWrapper);
+
+    // 2. Input element
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'step-param-input borderless';
+    input.value = initialValue || '';
+    input.placeholder = placeholder || '';
+    input.disabled = isDisabled;
+    if (isCsvMapped) input.classList.add('hidden');
+    input.addEventListener('change', (e) => {
+      onValueChange(e.target.value);
+    });
+    container.appendChild(input);
+
+    // 3. CSV Trigger Button (samping kanan form input, mirip kayak icon X itu)
+    const btnTrigger = document.createElement('button');
+    btnTrigger.className = 'btn-csv-trigger';
+    btnTrigger.type = 'button';
+    btnTrigger.title = 'Petakan ke Kolom CSV';
+    btnTrigger.disabled = isDisabled;
+    btnTrigger.innerHTML = `
+      <svg class="csv-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="16" y1="13" x2="8" y2="13"/>
+        <line x1="16" y1="17" x2="8" y2="17"/>
+      </svg>
+    `;
+    
+    btnTrigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      
+      // Close all other open CSV dropdowns first
+      document.querySelectorAll('.csv-columns-dropdown').forEach(d => d.remove());
+      
+      const dropdown = document.createElement('div');
+      dropdown.className = 'csv-columns-dropdown glass-card';
+      
+      // Position fixed below the container to avoid overflow/clipping bugs
+      const rect = container.getBoundingClientRect();
+      dropdown.style.position = 'fixed';
+      dropdown.style.top = `${rect.bottom + 4}px`;
+      dropdown.style.left = `${rect.left}px`;
+      dropdown.style.width = `${rect.width}px`;
+      
+      if (!currentState.csvData || !currentState.csvData.headers || currentState.csvData.headers.length === 0) {
+        const header = document.createElement('div');
+        header.className = 'csv-dropdown-header';
+        header.textContent = 'Belum ada CSV aktif. Pilih/unggah CSV di tab CSV Manager.';
+        dropdown.appendChild(header);
+      } else {
+        const header = document.createElement('div');
+        header.className = 'csv-dropdown-header-title';
+        header.textContent = 'Pilih Kolom CSV';
+        dropdown.appendChild(header);
+
+        currentState.csvData.headers.forEach(headerName => {
+          const item = document.createElement('div');
+          item.className = 'csv-dropdown-item';
+          if (isCsvMapped && csvColumnName === headerName) {
+            item.classList.add('selected');
+          }
+          item.textContent = headerName;
+          item.addEventListener('click', () => {
+            onCsvSelect(headerName);
+            dropdown.remove();
+          });
+          dropdown.appendChild(item);
+        });
+      }
+      
+      document.body.appendChild(dropdown);
+      
+      const closeDropdown = (event) => {
+        if (!dropdown.contains(event.target) && event.target !== btnTrigger) {
+          dropdown.remove();
+          document.removeEventListener('click', closeDropdown);
+          document.removeEventListener('scroll', closeDropdown, true);
+        }
+      };
+      setTimeout(() => {
+        document.addEventListener('click', closeDropdown);
+        document.addEventListener('scroll', closeDropdown, true);
+      }, 0);
+    });
+
+    container.appendChild(btnTrigger);
+
+    return container;
+  }
+
   // Render list of Scenario Actions Steps
   let lastFocusedActionNonce = null;
   let lastPlaybackFocusKey = '';
@@ -718,16 +845,38 @@ document.addEventListener('DOMContentLoaded', () => {
   
       if (step.type === 'click' || step.type === 'click_optional' || step.type === 'input') {
         hasBottomContent = true;
-        const selectorInput = document.createElement('input');
-        selectorInput.type = 'text';
-        selectorInput.className = 'step-param-input';
-        selectorInput.value = step.selector || '';
-        selectorInput.placeholder = 'CSS Selector target';
-        selectorInput.disabled = !isIdle;
-        selectorInput.addEventListener('change', (e) => {
-          sendExtensionMessage({ type: 'UPDATE_ACTION', index: idx, updatedAction: { selector: e.target.value } });
-        });
-        bottomRow.appendChild(selectorInput);
+        if (step.type === 'click' || step.type === 'click_optional') {
+          // Selector input with CSV support for click / click_optional actions
+          const selectorComp = createInputWithCsvSupport(
+            step.selector,
+            'CSS Selector target',
+            !isIdle,
+            !!step.csvColumn,
+            step.csvColumn,
+            (newVal) => {
+              sendExtensionMessage({ type: 'UPDATE_ACTION', index: idx, updatedAction: { selector: newVal } });
+            },
+            (columnName) => {
+              sendExtensionMessage({ type: 'UPDATE_ACTION', index: idx, updatedAction: { csvColumn: columnName } });
+            },
+            () => {
+              sendExtensionMessage({ type: 'UPDATE_ACTION', index: idx, updatedAction: { csvColumn: '' } });
+            }
+          );
+          bottomRow.appendChild(selectorComp);
+        } else {
+          // Normal selector input for input type (its value will have CSV mapping)
+          const selectorInput = document.createElement('input');
+          selectorInput.type = 'text';
+          selectorInput.className = 'step-param-input';
+          selectorInput.value = step.selector || '';
+          selectorInput.placeholder = 'CSS Selector target';
+          selectorInput.disabled = !isIdle;
+          selectorInput.addEventListener('change', (e) => {
+            sendExtensionMessage({ type: 'UPDATE_ACTION', index: idx, updatedAction: { selector: e.target.value } });
+          });
+          bottomRow.appendChild(selectorInput);
+        }
       }
 
       // URL edit/remove row for click type
@@ -740,26 +889,26 @@ document.addEventListener('DOMContentLoaded', () => {
         urlLabel.textContent = 'URL:';
         urlLabel.style.cssText = 'font-size:0.7rem;color:var(--text-muted);white-space:nowrap;';
 
-        const urlInput = document.createElement('input');
-        urlInput.type = 'text';
-        urlInput.className = 'step-param-input';
-        urlInput.value = step.url || '';
-        urlInput.placeholder = 'URL halaman (kosongkan untuk elemen saja)';
-        urlInput.addEventListener('change', (e) => {
-          sendExtensionMessage({ type: 'UPDATE_ACTION', index: idx, updatedAction: { url: e.target.value } });
-        });
-
-        const btnRemoveUrl = document.createElement('button');
-        btnRemoveUrl.className = 'btn-remove-url';
-        btnRemoveUrl.title = 'Hapus URL';
-        btnRemoveUrl.innerHTML = '✕';
-        btnRemoveUrl.addEventListener('click', () => {
-          sendExtensionMessage({ type: 'UPDATE_ACTION', index: idx, updatedAction: { url: '' } });
-        });
+        const urlComp = createInputWithCsvSupport(
+          step.url,
+          'URL halaman (kosongkan untuk elemen saja)',
+          !isIdle,
+          !!step.csvColumnUrl,
+          step.csvColumnUrl,
+          (newVal) => {
+            sendExtensionMessage({ type: 'UPDATE_ACTION', index: idx, updatedAction: { url: newVal } });
+          },
+          (columnName) => {
+            sendExtensionMessage({ type: 'UPDATE_ACTION', index: idx, updatedAction: { csvColumnUrl: columnName } });
+          },
+          () => {
+            sendExtensionMessage({ type: 'UPDATE_ACTION', index: idx, updatedAction: { csvColumnUrl: '' } });
+          }
+        );
+        urlComp.style.flex = '1';
 
         urlEditRow.appendChild(urlLabel);
-        urlEditRow.appendChild(urlInput);
-        if (step.url) urlEditRow.appendChild(btnRemoveUrl);
+        urlEditRow.appendChild(urlComp);
         bottomRow.appendChild(urlEditRow);
       }
   
@@ -768,26 +917,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (step.type === 'input' || step.type === 'navigate' || step.type === 'scroll' || step.type === 'wait' || step.type === 'wait_until' || step.type === 'click_optional' || step.type === 'tab_switch' || step.type === 'keypress') {
         hasBottomContent = true;
-        const paramInput = document.createElement('input');
-        paramInput.type = 'text';
-        paramInput.className = 'step-param-input';
-        paramInput.value = step.type === 'tab_switch' ? (step.url || step.value || '') : (step.type === 'wait_until' ? (step.condition || step.value || '') : (step.type === 'click_optional' ? (step.timeoutMs || 5000) : (step.value || '')));
-        paramInput.placeholder = step.type === 'input' ? 'Teks pengisian...' : (step.type === 'navigate' ? 'URL...' : (step.type === 'tab_switch' ? 'URL tab...' : (step.type === 'keypress' ? 'Key (Enter)...' : (step.type === 'wait_until' ? 'exists .selector / text .status contains "OK"' : (step.type === 'click_optional' ? 'Timeout opsional ms' : 'Nilai...')))));
-        paramInput.disabled = !isIdle;
-        paramInput.addEventListener('change', (e) => {
-          const field = step.type === 'tab_switch' ? 'url' : (step.type === 'wait_until' ? 'condition' : (step.type === 'click_optional' ? 'timeoutMs' : 'value'));
-          const updatedAction = { [field]: step.type === 'click_optional' ? (parseInt(e.target.value, 10) || 5000) : e.target.value };
-          if (step.type === 'wait_until') updatedAction.value = e.target.value;
-          sendExtensionMessage({ type: 'UPDATE_ACTION', index: idx, updatedAction });
-        });
-
-        // For input type: hide text input when CSV column is selected
-        if (step.type === 'input' && step.csvColumn && step.csvColumn !== '') {
-          paramInput.style.display = 'none';
+        if (step.type === 'input' || step.type === 'navigate') {
+          // Render input with CSV mapping support
+          const placeholder = step.type === 'input' ? 'Teks pengisian...' : 'URL...';
+          const paramComp = createInputWithCsvSupport(
+            step.value,
+            placeholder,
+            !isIdle,
+            !!step.csvColumn,
+            step.csvColumn,
+            (newVal) => {
+              sendExtensionMessage({ type: 'UPDATE_ACTION', index: idx, updatedAction: { value: newVal } });
+            },
+            (columnName) => {
+              sendExtensionMessage({ type: 'UPDATE_ACTION', index: idx, updatedAction: { csvColumn: columnName } });
+            },
+            () => {
+              sendExtensionMessage({ type: 'UPDATE_ACTION', index: idx, updatedAction: { csvColumn: '' } });
+            }
+          );
+          bottomRow.appendChild(paramComp);
+        } else {
+          // Standard param input for other types
+          const paramInput = document.createElement('input');
+          paramInput.type = 'text';
+          paramInput.className = 'step-param-input';
+          paramInput.value = step.type === 'tab_switch' ? (step.url || step.value || '') : (step.type === 'wait_until' ? (step.condition || step.value || '') : (step.type === 'click_optional' ? (step.timeoutMs || 5000) : (step.value || '')));
+          paramInput.placeholder = step.type === 'input' ? 'Teks pengisian...' : (step.type === 'navigate' ? 'URL...' : (step.type === 'tab_switch' ? 'URL tab...' : (step.type === 'keypress' ? 'Key (Enter)...' : (step.type === 'wait_until' ? 'exists .selector / text .status contains "OK"' : (step.type === 'click_optional' ? 'Timeout opsional ms' : 'Nilai...')))));
+          paramInput.disabled = !isIdle;
+          paramInput.addEventListener('change', (e) => {
+            const field = step.type === 'tab_switch' ? 'url' : (step.type === 'wait_until' ? 'condition' : (step.type === 'click_optional' ? 'timeoutMs' : 'value'));
+            const updatedAction = { [field]: step.type === 'click_optional' ? (parseInt(e.target.value, 10) || 5000) : e.target.value };
+            if (step.type === 'wait_until') updatedAction.value = e.target.value;
+            sendExtensionMessage({ type: 'UPDATE_ACTION', index: idx, updatedAction });
+          });
+          bottomRow.appendChild(paramInput);
         }
-        paramInputRef = paramInput;
-
-        bottomRow.appendChild(paramInput);
       }
 
       if (step.type === 'wait_until') {
@@ -802,38 +967,6 @@ document.addEventListener('DOMContentLoaded', () => {
           sendExtensionMessage({ type: 'UPDATE_ACTION', index: idx, updatedAction: { timeoutMs: parseInt(e.target.value, 10) || 30000 } });
         });
         bottomRow.appendChild(timeoutInput);
-      }
-  
-      if ((step.type === 'input' || step.type === 'navigate') && csvData && csvData.headers && csvData.headers.length > 0) {
-        hasBottomContent = true;
-        const mappingRow = document.createElement('div');
-        mappingRow.className = 'step-csv-mapping';
-        const labelMapping = document.createElement('span');
-        labelMapping.textContent = 'Petakan CSV:';
-        const selectMapping = document.createElement('select');
-        selectMapping.className = 'step-csv-select';
-        selectMapping.disabled = !isIdle;
-        const optDefault = document.createElement('option');
-        optDefault.value = '';
-        optDefault.textContent = '-- Gunakan Nilai Statis --';
-        selectMapping.appendChild(optDefault);
-        csvData.headers.forEach(header => {
-          const opt = document.createElement('option');
-          opt.value = header;
-          opt.textContent = header;
-          if (step.csvColumn === header) opt.selected = true;
-          selectMapping.appendChild(opt);
-        });
-        selectMapping.addEventListener('change', (e) => {
-          sendExtensionMessage({ type: 'UPDATE_ACTION', index: idx, updatedAction: { csvColumn: e.target.value } });
-          // Toggle visibility of paramInput for input type
-          if (step.type === 'input' && paramInputRef) {
-            paramInputRef.style.display = e.target.value ? 'none' : '';
-          }
-        });
-        mappingRow.appendChild(labelMapping);
-        mappingRow.appendChild(selectMapping);
-        bottomRow.appendChild(mappingRow);
       }
 
       if (hasBottomContent) {

@@ -833,7 +833,7 @@ async function executeStepWithActiveTab(tabId, step, csvRowData, actionIdx) {
     if (!condition) {
       return { status: 'error', message: 'Kondisi tunggu kosong.' };
     }
-    const waitTabId = await ensureTabForStep(tabId, step, actionIdx, { navigateExact: false });
+    const waitTabId = await ensureTabForStep(tabId, step, actionIdx, csvRowData, { navigateExact: false });
     addLog(`[Langkah ${actionIdx + 1}] Menunggu kondisi: ${condition}`, 'info');
     return sendStepToTab(waitTabId, {
       type: 'wait_until',
@@ -845,8 +845,8 @@ async function executeStepWithActiveTab(tabId, step, csvRowData, actionIdx) {
   }
   
   // For DOM actions (click, input, scroll, keypress): verify we're on the right tab
-  if (step.url && (step.type === 'click' || step.type === 'click_optional' || step.type === 'input' || step.type === 'scroll' || step.type === 'keypress')) {
-    tabId = await ensureTabForStep(tabId, step, actionIdx, { navigateExact: true });
+  if ((step.url || step.csvColumnUrl) && (step.type === 'click' || step.type === 'click_optional' || step.type === 'input' || step.type === 'scroll' || step.type === 'keypress')) {
+    tabId = await ensureTabForStep(tabId, step, actionIdx, csvRowData, { navigateExact: true });
   }
   
   if (!tabId) {
@@ -854,15 +854,25 @@ async function executeStepWithActiveTab(tabId, step, csvRowData, actionIdx) {
   }
   
   let executionValue = step.value;
-  if (step.type === 'input' && step.csvColumn && csvRowData && csvRowData[step.csvColumn] !== undefined) {
-    executionValue = csvRowData[step.csvColumn];
+  let stepToSend = step;
+  if (step.csvColumn && csvRowData && csvRowData[step.csvColumn] !== undefined && csvRowData[step.csvColumn] !== '') {
+    const csvVal = csvRowData[step.csvColumn];
+    if (step.type === 'input') {
+      executionValue = csvVal;
+    } else if (step.type === 'click' || step.type === 'click_optional') {
+      stepToSend = { ...step, selector: csvVal };
+    }
   }
   
-  return sendStepToTab(tabId, step, executionValue);
+  return sendStepToTab(tabId, stepToSend, executionValue);
 }
 
-async function ensureTabForStep(tabId, step, actionIdx, options = {}) {
-  if (!step.url) return tabId;
+async function ensureTabForStep(tabId, step, actionIdx, csvRowData, options = {}) {
+  let stepUrl = step.url;
+  if (step.csvColumnUrl && csvRowData && csvRowData[step.csvColumnUrl] !== undefined && csvRowData[step.csvColumnUrl] !== '') {
+    stepUrl = csvRowData[step.csvColumnUrl];
+  }
+  if (!stepUrl) return tabId;
   try {
     let tabInfo = null;
     if (tabId) {
@@ -875,13 +885,13 @@ async function ensureTabForStep(tabId, step, actionIdx, options = {}) {
     }
 
     const currentUrl = tabInfo ? tabInfo.url || '' : '';
-    const stepHost = new URL(step.url).hostname;
+    const stepHost = new URL(stepUrl).hostname;
     const currentHost = currentUrl ? new URL(currentUrl).hostname : '';
-    const mustNavigate = !currentHost || currentHost !== stepHost || (options.navigateExact && !urlsAreCloseEnough(currentUrl, step.url));
+    const mustNavigate = !currentHost || currentHost !== stepHost || (options.navigateExact && !urlsAreCloseEnough(currentUrl, stepUrl));
 
     if (mustNavigate) {
-      addLog(`[Langkah ${actionIdx + 1}] Membuka halaman yang terekam: ${step.url}`, 'warning');
-      tabId = await findOrCreateTab(step.url);
+      addLog(`[Langkah ${actionIdx + 1}] Membuka halaman yang terekam: ${stepUrl}`, 'warning');
+      tabId = await findOrCreateTab(stepUrl);
       state.activeTabId = tabId;
       broadcastState();
       await waitForTabComplete(tabId);
