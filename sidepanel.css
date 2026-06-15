@@ -378,11 +378,94 @@ body {
 /* Clear button */
 .action-btn.clear-btn {
   color: var(--text-muted);
-  margin-left: auto;
 }
 .action-btn.clear-btn:hover:not(:disabled) {
   color: var(--color-danger);
   background: rgba(239, 68, 68, 0.12);
+}
+
+/* Save button (next to clear) */
+.action-btn.save-btn {
+  color: var(--color-cyan);
+  margin-left: auto;
+}
+.action-btn.save-btn:hover:not(:disabled) {
+  background: rgba(0, 245, 212, 0.15);
+  box-shadow: 0 0 10px rgba(0, 245, 212, 0.2);
+}
+
+/* Clear button - remove margin-left auto since save now has it */
+
+/* Save modal icon */
+.save-modal-icon {
+  width: 24px;
+  height: 24px;
+  color: var(--color-cyan);
+}
+
+/* Empty state add button */
+.empty-state-add-btn {
+  margin-top: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 20px;
+  border-radius: 8px;
+  border: 1px dashed rgba(157, 78, 221, 0.4);
+  background: rgba(157, 78, 221, 0.08);
+  color: var(--color-purple);
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all var(--transition-speed);
+}
+
+.empty-state-add-btn:hover {
+  background: rgba(157, 78, 221, 0.18);
+  border-color: rgba(157, 78, 221, 0.6);
+  box-shadow: 0 0 12px rgba(157, 78, 221, 0.15);
+  transform: translateY(-1px);
+}
+
+.empty-state-add-btn .plus-icon {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+/* Step URL edit row */
+.step-url-edit-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.step-url-edit-row .step-param-input {
+  flex: 1;
+}
+
+.btn-remove-url {
+  background: transparent;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: var(--color-danger);
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  transition: all var(--transition-speed);
+  flex-shrink: 0;
+}
+
+.btn-remove-url:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
 }
 
 /* Generic button classes still used in modals/other tabs */

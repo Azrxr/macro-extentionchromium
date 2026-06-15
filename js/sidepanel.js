@@ -51,6 +51,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnSaveScenario = document.getElementById('btn-save-scenario');
   const scenariosListContainer = document.getElementById('scenarios-list');
   
+  // Save Quick Button & Modal
+  const btnSaveQuick = document.getElementById('btn-save-quick');
+  const saveScenarioModal = document.getElementById('save-scenario-modal');
+  const quickScenarioNameInput = document.getElementById('quick-scenario-name');
+  const btnSaveModalCancel = document.getElementById('btn-save-modal-cancel');
+  const btnSaveModalConfirm = document.getElementById('btn-save-modal-confirm');
+
   // Error Modal
   const errorModal = document.getElementById('error-modal');
   const errorMessageText = document.getElementById('error-message-text');
@@ -244,6 +251,11 @@ document.addEventListener('DOMContentLoaded', () => {
       btnClear.disabled = (status !== 'idle');
     }
     
+    // Save quick button
+    if (btnSaveQuick) {
+      btnSaveQuick.disabled = (status !== 'idle') || (!state.scenario || state.scenario.length === 0);
+    }
+    
     // 3. Floating UI button highlight
     if (btnToggleFloating) {
       if (state.isFloatingOpen) {
@@ -376,6 +388,71 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Quick Save Button - opens modal with auto-generated name
+  if (btnSaveQuick) {
+    btnSaveQuick.addEventListener('click', () => {
+      // Generate default name based on existing scenarios count
+      chrome.storage.local.get(['scenarios'], (res) => {
+        const scenarios = res.scenarios || {};
+        const existingNames = Object.keys(scenarios);
+        let nextNum = 1;
+        while (existingNames.includes(`Skenario ${nextNum}`)) {
+          nextNum++;
+        }
+        if (quickScenarioNameInput) quickScenarioNameInput.value = `Skenario ${nextNum}`;
+        if (saveScenarioModal) saveScenarioModal.classList.remove('hidden');
+        if (quickScenarioNameInput) {
+          setTimeout(() => quickScenarioNameInput.select(), 100);
+        }
+      });
+    });
+  }
+
+  // Save modal cancel
+  if (btnSaveModalCancel) {
+    btnSaveModalCancel.addEventListener('click', () => {
+      if (saveScenarioModal) saveScenarioModal.classList.add('hidden');
+    });
+  }
+
+  // Save modal confirm
+  if (btnSaveModalConfirm) {
+    btnSaveModalConfirm.addEventListener('click', () => {
+      const name = quickScenarioNameInput ? quickScenarioNameInput.value.trim() : '';
+      if (!name) {
+        alert('Masukkan nama skenario terlebih dahulu.');
+        return;
+      }
+      sendExtensionMessage({ type: 'SAVE_SCENARIO_TO_DB', name: name }, (res) => {
+        if (res && res.status === 'success') {
+          if (saveScenarioModal) saveScenarioModal.classList.add('hidden');
+          loadSavedScenariosList();
+        } else {
+          alert(`Gagal menyimpan skenario: ${res ? res.message : 'Kesalahan tidak diketahui'}`);
+        }
+      });
+    });
+  }
+
+  // Close modal on overlay click
+  if (saveScenarioModal) {
+    saveScenarioModal.addEventListener('click', (e) => {
+      if (e.target === saveScenarioModal) {
+        saveScenarioModal.classList.add('hidden');
+      }
+    });
+  }
+
+  // Enter key to confirm save in modal
+  if (quickScenarioNameInput) {
+    quickScenarioNameInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        if (btnSaveModalConfirm) btnSaveModalConfirm.click();
+      }
+    });
+  }
+
   // Play / Pause toggle
   if (btnPlay) {
     btnPlay.addEventListener('click', () => {
@@ -478,14 +555,28 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!stepsListContainer) return;
   
     if (scenario.length === 0) {
-      stepsListContainer.innerHTML = `
-        <div class="empty-state">
-          <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M12 15V17M12 7V13M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <p>Belum ada aksi yang direkam. Klik tombol <strong>Rekam</strong> untuk memulai otomatisasi.</p>
-        </div>
+      stepsListContainer.innerHTML = '';
+      const emptyDiv = document.createElement('div');
+      emptyDiv.className = 'empty-state';
+      emptyDiv.innerHTML = `
+        <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M12 15V17M12 7V13M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <p>Belum ada aksi yang direkam. Klik tombol <strong>Rekam</strong> atau tambahkan langkah manual.</p>
       `;
+      const addBtn = document.createElement('button');
+      addBtn.className = 'empty-state-add-btn';
+      addBtn.innerHTML = '<span class="plus-icon">+</span> Tambah Langkah';
+      addBtn.addEventListener('click', () => {
+        // Create a temporary insert line and trigger toolbar at index 0
+        const tempLine = document.createElement('div');
+        tempLine.className = 'step-insert-line';
+        stepsListContainer.innerHTML = '';
+        stepsListContainer.appendChild(tempLine);
+        toggleInsertToolbar(tempLine, 0);
+      });
+      emptyDiv.appendChild(addBtn);
+      stepsListContainer.appendChild(emptyDiv);
       return;
     }
   
@@ -638,7 +729,43 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         bottomRow.appendChild(selectorInput);
       }
+
+      // URL edit/remove row for click type
+      if ((step.type === 'click' || step.type === 'click_optional') && isIdle) {
+        hasBottomContent = true;
+        const urlEditRow = document.createElement('div');
+        urlEditRow.className = 'step-url-edit-row';
+
+        const urlLabel = document.createElement('span');
+        urlLabel.textContent = 'URL:';
+        urlLabel.style.cssText = 'font-size:0.7rem;color:var(--text-muted);white-space:nowrap;';
+
+        const urlInput = document.createElement('input');
+        urlInput.type = 'text';
+        urlInput.className = 'step-param-input';
+        urlInput.value = step.url || '';
+        urlInput.placeholder = 'URL halaman (kosongkan untuk elemen saja)';
+        urlInput.addEventListener('change', (e) => {
+          sendExtensionMessage({ type: 'UPDATE_ACTION', index: idx, updatedAction: { url: e.target.value } });
+        });
+
+        const btnRemoveUrl = document.createElement('button');
+        btnRemoveUrl.className = 'btn-remove-url';
+        btnRemoveUrl.title = 'Hapus URL';
+        btnRemoveUrl.innerHTML = '✕';
+        btnRemoveUrl.addEventListener('click', () => {
+          sendExtensionMessage({ type: 'UPDATE_ACTION', index: idx, updatedAction: { url: '' } });
+        });
+
+        urlEditRow.appendChild(urlLabel);
+        urlEditRow.appendChild(urlInput);
+        if (step.url) urlEditRow.appendChild(btnRemoveUrl);
+        bottomRow.appendChild(urlEditRow);
+      }
   
+      // Reference to paramInput for hiding when CSV column is selected (input type)
+      let paramInputRef = null;
+
       if (step.type === 'input' || step.type === 'navigate' || step.type === 'scroll' || step.type === 'wait' || step.type === 'wait_until' || step.type === 'click_optional' || step.type === 'tab_switch' || step.type === 'keypress') {
         hasBottomContent = true;
         const paramInput = document.createElement('input');
@@ -653,6 +780,13 @@ document.addEventListener('DOMContentLoaded', () => {
           if (step.type === 'wait_until') updatedAction.value = e.target.value;
           sendExtensionMessage({ type: 'UPDATE_ACTION', index: idx, updatedAction });
         });
+
+        // For input type: hide text input when CSV column is selected
+        if (step.type === 'input' && step.csvColumn && step.csvColumn !== '') {
+          paramInput.style.display = 'none';
+        }
+        paramInputRef = paramInput;
+
         bottomRow.appendChild(paramInput);
       }
 
@@ -692,6 +826,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         selectMapping.addEventListener('change', (e) => {
           sendExtensionMessage({ type: 'UPDATE_ACTION', index: idx, updatedAction: { csvColumn: e.target.value } });
+          // Toggle visibility of paramInput for input type
+          if (step.type === 'input' && paramInputRef) {
+            paramInputRef.style.display = e.target.value ? 'none' : '';
+          }
         });
         mappingRow.appendChild(labelMapping);
         mappingRow.appendChild(selectMapping);

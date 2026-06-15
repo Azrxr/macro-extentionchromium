@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Magerin",
   "version": "1.0.0",
-  "description": "RPA Browser Automation Extension with Glassmorphic Dark UI",
+  "description": "RPA Browser Automation Extension",
   "permissions": [
     "storage",
     "tabs",
@@ -20,7 +20,7 @@
     "default_path": "sidepanel.html"
   },
   "action": {
-    "default_title": "Open Magerin"
+    "default_title": "Magerin"
   },
   "content_scripts": [
     {
@@ -40,5 +40,10 @@
         "<all_urls>"
       ]
     }
-  ]
+  ],
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  }
 }

@@ -87,27 +87,77 @@ document.addEventListener('keydown', (e) => {
 }, true);
 
 // Debounced Window Scroll recording
-window.addEventListener('scroll', (e) => {
+// Menggunakan listener di window tanpa capture agar e.target lebih terprediksi
+let lastRecordedScrollY = null;
+
+window.addEventListener('scroll', () => {
   if (!isRecordingActive) return;
-  // Hanya tangkap scroll window/document utama
-  if (e.target !== document && e.target !== window) return;
   
   clearTimeout(scrollTimeout);
   scrollTimeout = setTimeout(() => {
-    console.log('Recorded Scroll, Y-offset:', window.scrollY);
+    const currentY = window.scrollY || window.pageYOffset || 0;
+    // Hindari rekam scroll duplikat pada posisi yang sama
+    if (lastRecordedScrollY !== null && Math.abs(currentY - lastRecordedScrollY) < 10) return;
+    lastRecordedScrollY = currentY;
+    
+    console.log('Recorded Scroll, Y-offset:', currentY);
     chrome.runtime.sendMessage({
       type: 'RECORD_ACTION',
       action: {
         id: Date.now(),
         type: 'scroll',
         selector: 'window',
-        value: window.scrollY.toString(),
+        value: currentY.toString(),
         url: window.location.href,
         title: document.title
       }
     });
-  }, 1000);
-}, true);
+  }, 800);
+});
+
+// Scroll pada elemen container (untuk TikTok, Instagram, dll yang scroll di dalam div)
+let elementScrollTimeout = null;
+let lastElementScrollInfo = { selector: '', scrollTop: 0, time: 0 };
+
+document.addEventListener('scroll', (e) => {
+  if (!isRecordingActive) return;
+  
+  const target = e.target;
+  // Abaikan scroll di window/document (sudah ditangani di atas)
+  if (target === document || target === document.documentElement || target === window) return;
+  // Abaikan elemen dari Magerin UI
+  if (target.closest && target.closest('#magerin-floating-container')) return;
+  
+  // Hanya tangkap elemen yang benar-benar scrollable (tinggi scroll > tinggi tampil)
+  if (!target.scrollHeight || target.scrollHeight <= target.clientHeight + 10) return;
+  
+  clearTimeout(elementScrollTimeout);
+  elementScrollTimeout = setTimeout(() => {
+    const selector = getUniqueSelector(target);
+    const scrollTop = target.scrollTop || 0;
+    const now = Date.now();
+    
+    // Deduplikasi: abaikan jika elemen & posisi sama dalam waktu dekat
+    if (lastElementScrollInfo.selector === selector && 
+        Math.abs(scrollTop - lastElementScrollInfo.scrollTop) < 10 &&
+        now - lastElementScrollInfo.time < 2000) return;
+    
+    lastElementScrollInfo = { selector, scrollTop, time: now };
+    
+    console.log('Recorded Element Scroll:', selector, 'scrollTop:', scrollTop);
+    chrome.runtime.sendMessage({
+      type: 'RECORD_ACTION',
+      action: {
+        id: now,
+        type: 'scroll',
+        selector: selector,
+        value: scrollTop.toString(),
+        url: window.location.href,
+        title: document.title
+      }
+    });
+  }, 600);
+}, true); // capture: true agar menangkap scroll di semua elemen anak
 
 // Listen for execution commands from background.js
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -205,7 +255,8 @@ async function executeStep(step, value) {
             behavior: 'smooth'
           });
         } else {
-          window.scrollBy({
+          // Gunakan scrollTo untuk posisi absolut (dari rekaman scrollY)
+          window.scrollTo({
             top: parseInt(value) || 300,
             behavior: 'smooth'
           });
@@ -218,7 +269,8 @@ async function executeStep(step, value) {
             behavior: 'smooth'
           });
         } else {
-          element.scrollBy({
+          // Gunakan scrollTo untuk posisi absolut (dari rekaman scrollTop elemen)
+          element.scrollTo({
             top: parseInt(value) || 300,
             behavior: 'smooth'
           });
